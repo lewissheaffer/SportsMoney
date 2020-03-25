@@ -4,12 +4,12 @@ import { Text } from 'react-native-elements';
 
 
 
-export default function Index() {
+export default function Inbox() {
 
     return (
 
         <Text>
-            Hello, this is index page...
+            Hello, this is inbox page...
         </Text>
 
 

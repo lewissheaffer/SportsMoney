@@ -5,43 +5,32 @@ import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import Groups from '../screens/Groups';
 import Friends from '../screens/Friends';
-import Index from '../screens/Index';
+import Inbox from '../screens/Inbox';
 import Profile from '../screens/Profile';
+import { Ionicons } from '@expo/vector-icons';
+
 
 
 const BottomTab = createBottomTabNavigator();
-const INITIAL_ROUTE_NAME = 'Home';
+const INITIAL_ROUTE_NAME = 'Groups';
 
 export default function BottomTabNavigator({ navigation, route }) {
   // Set the header title on the parent stack navigator depending on the
   // currently active tab. Learn more in the documentation:
   // https://reactnavigation.org/docs/en/screen-options-resolution.html
-  navigation.setOptions({ headerTitle: getHeaderTitle(route) });
+  navigation.setOptions({ headerTitle: getHeaderTitle(route), headerRight: () => (
+    //So the "Icon only gets displayed when"
+    (getHeaderTitle(route) == "Groups") && <Ionicons name={'md-add-circle-outline'} size={35} style={{marginRight:20, }} onPress= {() => {alert("Replace this alert with a Modal")}}/> )
+  });
 
   return (
-    <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
-      <BottomTab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          title: 'Get Started',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-code-working" />,
-        }}
-      />
-      <BottomTab.Screen
-        name="Links"
-        component={LinksScreen}
-        options={{
-          title: 'Resources',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-book" />,
-        }}
-      />
+    <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME} tabBarOptions = {{style: {height:55}}}>
       <BottomTab.Screen
         name="Groups"
         component={Groups}
         options={{
           title: 'Groups',
-          tabBarIcon: ({focused}) => <TabBarIcon focused={focused} name="md-code-working"/>,
+          tabBarIcon: ({focused}) => <TabBarIcon focused={focused} name="md-basketball"/>,
         }}
 
       />
@@ -50,16 +39,16 @@ export default function BottomTabNavigator({ navigation, route }) {
         component={Friends}
         options={{
           title: 'Friends',
-          tabBarIcon: ({focused}) => <TabBarIcon focused={focused} name="md-code-working"/>,
+          tabBarIcon: ({focused}) => <TabBarIcon focused={focused} name="md-people"/>,
         }}
 
       />
       <BottomTab.Screen
-        name="Index"
-        component={Index}
+        name="Inbox"
+        component={Inbox}
         options={{
-          title: 'Index',
-          tabBarIcon: ({focused}) => <TabBarIcon focused={focused} name="md-code-working"/>,
+          title: 'Inbox',
+          tabBarIcon: ({focused}) => <TabBarIcon focused={focused} name="md-mail"/>,
         }}
 
       />
@@ -68,7 +57,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         component={Profile}
         options={{
           title: 'Profile',
-          tabBarIcon: ({focused}) => <TabBarIcon focused={focused} name="md-code-working"/>,
+          tabBarIcon: ({focused}) => <TabBarIcon focused={focused} name="md-person"/>,
         }}
 
       />
@@ -79,11 +68,5 @@ export default function BottomTabNavigator({ navigation, route }) {
 
 function getHeaderTitle(route) {
   const routeName = route.state?.routes[route.state.index]?.name ?? INITIAL_ROUTE_NAME;
-
-  switch (routeName) {
-    case 'Home':
-      return 'How to get started';
-    case 'Links':
-      return 'Links to learn more';
-  }
+  return routeName;
 }
