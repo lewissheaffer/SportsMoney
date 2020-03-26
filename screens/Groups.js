@@ -1,23 +1,29 @@
 import * as React from 'react';
 import { Text, ListItem} from 'react-native-elements';
-import {View} from 'react-native';
-
-
-const list = [
-  {
-    name: 'The All-Stars',
-    subtitle: 'NBA'
-  },
-  {
-    name: 'NFL 2019 League',
-    subtitle: 'NFL',
-  },
-]
+import {View, Button} from 'react-native';
+import {useState} from 'react';
 
 export default function Groups() {
 
+    let [list, setList] = useState([]);
+
     return (
       <View>
+        <Button
+          onPress={() => {
+            try{
+              console.log("fetching groups");
+              let response = fetch('https://sportsmoneynodejs.appspot.com/get_groups_test')
+              .then((response) => response.json())
+              .then((json) => {
+                setList(json);
+              });
+            }catch(err){
+              console.log(err);
+            }
+          }}
+          title="test"
+        />
         {
           list.map((l, i) => (
             <ListItem key={i} title={l.name} subtitle={l.subtitle} bottomDivider/>
@@ -25,4 +31,5 @@ export default function Groups() {
         }
       </View>
     );
+
 }
