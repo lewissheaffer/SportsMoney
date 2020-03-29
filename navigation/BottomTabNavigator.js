@@ -3,9 +3,11 @@ import { useState} from 'react';
 import {View, Picker} from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import TabBarIcon from '../components/TabBarIcon';
+import GroupDialogModal from '../components/GroupDialogModal';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import Groups from '../screens/Groups';
+import {createGroups, fetchGroups} from '../screens/Groups'
 import Friends from '../screens/Friends';
 import Inbox from '../screens/Inbox';
 import Profile from '../screens/Profile';
@@ -27,32 +29,12 @@ export default function BottomTabNavigator({ navigation, route }) {
   // https://reactnavigation.org/docs/en/screen-options-resolution.html
   navigation.setOptions({ headerTitle: getHeaderTitle(route), headerRight: () => (
     //So the "Icon only gets displayed when"
-    (getHeaderTitle(route) == "Groups") && <Ionicons name={'md-add-circle-outline'} size={35} style={{marginRight:20, }} onPress= {() => {toggleModal(true)}}/> )
+    (getHeaderTitle(route) == "Groups") && <Ionicons name={'md-add-circle-outline'} size={35} style={{marginRight:20, }} onPress = {() => {toggleModal(true)}}/> )
   });
 
   return (
     <React.Fragment>
-      <Overlay isVisible={modal} height = {250}  onBackdropPress = {() => {toggleModal(false)}}>
-        <View style={{flex:1,}}>
-          <Text style = {{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}}>Create a Group</Text>
-          <Input placeholder = {"Group Name"}/>
-          <Text  style = {{marginTop: 15, marginBottom: 0,}}>Select League</Text>
-          <Picker style={{ height: 50, width: 150}} selectedValue={selectedValue} onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}>
-            <Picker.Item label="NBA" value="NBA" />
-            <Picker.Item label="NFL" value="NFL" />
-            <Picker.Item label="MLB" value="MLB" />
-            <Picker.Item label="NHL" value="NHL" />
-          </Picker>
-          <View style = {{flexDirection:'row-reverse', alignSelf: "flex-end"}}>
-            <View style={{width: 80}}>
-              <Button title = {"Submit"} type = {'clear'}  onPress = {() => {toggleModal(false)}}/>
-            </View>
-            <View style={{width: 80}}>
-              <Button title = {"Cancel"} type = {'clear'} onPress = {() => {toggleModal(false)}}/>
-            </View>
-          </View>
-      </View>
-      </Overlay>
+      <GroupDialogModal isVisible = {modal} onClose = {() => toggleModal(false)} onSubmit = {(groupName,league) => {toggleModal(false);}}/>
 
       <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME} tabBarOptions = {{style: {height:55}}}>
         <BottomTab.Screen

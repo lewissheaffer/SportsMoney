@@ -9,27 +9,36 @@ export default function Groups() {
 
     return (
       <View>
-        <Button
-          onPress={() => {
-            try{
-              console.log("fetching groups");
-              let response = fetch('https://sportsmoneynodejs.appspot.com/get_groups_test')
-              .then((response) => response.json())
-              .then((json) => {
-                setList(json);
-              });
-            }catch(err){
-              console.log(err);
-            }
-          }}
-          title="test"
-        />
         {
           list.map((l, i) => (
-            <ListItem key={i} title={l.name} subtitle={l.subtitle} bottomDivider/>
+            <ListItem key={i} title={l.name} subtitle={l.sport} bottomDivider/>
           ))
         }
       </View>
     );
+}
 
+export function createGroup() {
+    try{
+      console.log("fetching groups");
+      let response = fetch('https://sportsmoneynodejs.appspot.com/get_groups_test', {
+        method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: 'DBImhoff',
+            name:"TestGroup#1",
+            sport: 'Basketball',
+          }),
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        //console.log(json);
+        setList(json);
+      });
+    }catch(err){
+      console.log(err);
+    }
 }
