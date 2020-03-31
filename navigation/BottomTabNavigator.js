@@ -7,7 +7,7 @@ import GroupDialogModal from '../components/GroupDialogModal';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import Groups from '../screens/Groups';
-import {createGroups, fetchGroups} from '../screens/Groups'
+import {createGroup} from '../screens/Groups'
 import Friends from '../screens/Friends';
 import Inbox from '../screens/Inbox';
 import Profile from '../screens/Profile';
@@ -34,7 +34,7 @@ export default function BottomTabNavigator({ navigation, route }) {
 
   return (
     <React.Fragment>
-      <GroupDialogModal isVisible = {modal} onClose = {() => toggleModal(false)} onSubmit = {(groupName,league) => {toggleModal(false);}}/>
+      <GroupDialogModal isVisible = {modal} onClose = {() => toggleModal(false)} onSubmit = {(groupName,league) => {toggleModal(false); createGroup("lewiss",groupName,league)}}/>
 
       <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME} tabBarOptions = {{style: {height:55}}}>
         <BottomTab.Screen
