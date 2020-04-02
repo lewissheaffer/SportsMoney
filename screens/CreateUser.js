@@ -10,48 +10,39 @@ AppRegistry,
   Alert} from 'react-native';
 
 export default class CreateUser extends Component{
+
   constructor(props) {
     super(props);
     this.state = {
       TextUsername: '',
       TextPassword: '',
-      TextPassword1:'',
+      TextPassword1: ''
     };
   }
+
   CheckTextInput = () => {
-    if (this.state.TextUsername != '') {
-
-      if (this.state.TextPassword ==this.state.TextPassword1) {
-        fetch('https://sportsmoneynodejs.appspot.com/login', {
-     method: 'POST',
-     headers: {
-       Accept: 'application/json',
-       'Content-Type': 'application/json',
-     },
-     body: JSON.stringify({
-       username: this.state.textUsername,
-       password: this.state.TextPassword1
-     }),
-   })
-   .then((response) => response.json())
-   .then((json) => {
-     if(json.key){
-       SecureStore.setItemAsync('auth', json.key);
-     }else{
-       alert('Username is taken, please enter a new one');
-     }
-   });
- }
-
-        }
-        //alert('Success')
-      } else {
-        alert('Passwords are not equal');
-      }
-    } else {
+    if(!this.state.TextUsername){
       alert('Username cannot be blank');
+    } else if (this.state.TextPassword == this.state.TextPassword1) {
+      fetch('https://sportsmoneynodejs.appspot.com/login', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+        username: this.state.textUsername,
+        password: this.state.TextPassword1
+        }),
+      })
+      .then((response) => response.json())
+      .then((json) => {
+      });
+    } else {
+      alert('Passwords are not equal');
     }
   };
+  
 render(){
 return(
 <View style={styles.View}>
