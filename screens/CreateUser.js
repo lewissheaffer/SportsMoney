@@ -19,12 +19,32 @@ export default class CreateUser extends Component{
     };
   }
   CheckTextInput = () => {
-    //Handler for the Submit onPress
     if (this.state.TextUsername != '') {
 
       if (this.state.TextPassword ==this.state.TextPassword1) {
+        fetch('https://sportsmoneynodejs.appspot.com/login', {
+     method: 'POST',
+     headers: {
+       Accept: 'application/json',
+       'Content-Type': 'application/json',
+     },
+     body: JSON.stringify({
+       username: this.state.textUsername,
+       password: this.state.TextPassword1
+     }),
+   })
+   .then((response) => response.json())
+   .then((json) => {
+     if(json.key){
+       SecureStore.setItemAsync('auth', json.key);
+     }else{
+       alert('Username is taken, please enter a new one');
+     }
+   });
+ }
 
-        alert('Success')
+        }
+        //alert('Success')
       } else {
         alert('Passwords are not equal');
       }
