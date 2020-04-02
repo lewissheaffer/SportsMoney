@@ -1,44 +1,60 @@
 import * as React from 'react';
 import { Text, ListItem} from 'react-native-elements';
-import {View, Button} from 'react-native';
+import {View, Button, ScrollView, RefreshControl} from 'react-native';
 import {useState} from 'react';
 
-export default function Groups() {
-  let [list, setList] = useState([]);
-    return (
+export default class Groups extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      list: [],
+      refreshing: false,
+    }
+  }
 
-      <View>
-      <Button title="Hello" onPress = {() =>{
-        try{
-          console.log("fetching groups");
-          let response = fetch('https://sportsmoneynodejs.appspot.com/create_group', {
-            method: 'POST',
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                username: "lewiss",
-                name: "Test Group",
-                sport: "NBA",
-              }),
-          })
-          .then((response) => response.json())
-          .then((json) => {
-            //console.log(json);
-            setList(json);
-          });
-        }catch(err){
-          console.log(err);
-        }
-      }}/>
+  componentDidMount() {
+    this.fetchGroups("lewiss")
+  }
+
+  fetchGroups(username) {
+    try{
+      console.log("fetching groups");
+      let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_groups', {
+        method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: username,
+          }),
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({list:json});
+        this.setState({refreshing:false});
+      });
+    }catch(err){
+      console.log(err);
+    }
+  }
+
+  refreshList() {
+    this.setState({refreshing: true});
+    this.fetchGroups("lewiss");
+  }
+
+  render() {
+    return (
+      <ScrollView refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
         {
-          list.map((l, i) => (
+          this.state.list.map((l, i) => (
             <ListItem key={i} title={l.name} subtitle={l.sport} bottomDivider/>
           ))
         }
-      </View>
+      </ScrollView>
     );
+  }
 }
 
 export function createGroup(username, name, sport) {
@@ -56,15 +72,7 @@ export function createGroup(username, name, sport) {
             sport: sport,
           }),
       })
-      .then((response) => response.json())
-      .then((json) => {
-        //console.log(json);
-        setList(json);
-      });
     }catch(err){
       console.log(err);
     }
-}
-
-export function fetchGroups(username) {
 }
