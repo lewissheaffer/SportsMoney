@@ -7,6 +7,7 @@ import {View,
   StyleSheet,
   ActivityIndicator,
   Alert} from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 
 export default class Login extends Component{
 
@@ -35,10 +36,12 @@ export default class Login extends Component{
     })
     .then((response) => response.json())
     .then((json) => {
-      if(json.key){
-        SecureStore.setItemAsync('key', json.key);
+      if(json[0].ukey){
+        SecureStore.setItemAsync('key', json[0].ukey);
+        this.props.page('Authentication');
       }else{
-        alert('Incorrect username or password.');
+        alert(json);
+        //alert('Incorrect username or password.');
       }
       this.setState({isLoggingIn: false});
     });

@@ -9,17 +9,21 @@ import { createStackNavigator } from '@react-navigation/stack';
 import BottomTabNavigator from '../navigation/BottomTabNavigator';
 import useLinking from '../navigation/useLinking';
 
+const Stack = createStackNavigator();
+
 export default class Secured extends Component{
 
   constructor(props){
     super(props);
+    this.state = {
+    }
   }
 
   render(){
     return (
       <View style={styles.container}>
         {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-        <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
+        <NavigationContainer >
           <Stack.Navigator>
             <Stack.Screen name="test" options = {{headerTitleAlign: 'center', headerTitleStyle: {fontSize:22}, }} component={BottomTabNavigator}/>
           </Stack.Navigator>

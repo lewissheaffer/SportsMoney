@@ -1,20 +1,13 @@
 import * as React from 'react';
-import { Text } from 'react-native-elements';
-
+import { Text, Button } from 'react-native-elements';
+import * as SecureStore from 'expo-secure-store';
+//import {Button} from 'react-native'
 
 
 
 export default function Profile() {
 
     return (
-
-        <Text>
-            Hello, this is profile page...
-        </Text>
-
-
+      <Button title={"Logout"} onPress = {() => SecureStore.deleteItemAsync('key')}/>
     );
-
-
-
 }

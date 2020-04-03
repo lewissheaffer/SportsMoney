@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Text, ListItem} from 'react-native-elements';
 import {View, Button, ScrollView, RefreshControl} from 'react-native';
 import {useState} from 'react';
+import * as SecureStore from 'expo-secure-store';
 
 export default class Groups extends React.Component {
   constructor(props) {
@@ -41,7 +42,7 @@ export default class Groups extends React.Component {
 
   refreshList() {
     this.setState({refreshing: true});
-    this.fetchGroups("lewiss");
+    this.fetchGroups(SecureStore.getItemAsync("key").then((response) => {return(response)}));
   }
 
   render() {
