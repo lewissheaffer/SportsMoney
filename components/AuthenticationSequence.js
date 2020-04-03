@@ -3,6 +3,7 @@ import * as SecureStore from 'expo-secure-store';
 
 import Login from '../screens/Login';
 import CreateUser from '../screens/CreateUser';
+import Authentication from './Authentication';
 
 export default class AuthenticationSequence extends Component{
 
@@ -20,7 +21,10 @@ export default class AuthenticationSequence extends Component{
   render(){
     if(this.state.page == 'Login'){
       return <Login page={this.page}/>;
-    }else{
+    } else if(this.state.page == 'Authentication') {
+      return <Authentication/>
+    }
+    else{
       return <CreateUser page={this.page}/>;
     }
   }

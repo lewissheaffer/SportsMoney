@@ -4,8 +4,6 @@ import {View, Picker} from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import TabBarIcon from '../components/TabBarIcon';
 import GroupDialogModal from '../components/GroupDialogModal';
-import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
 import Groups from '../screens/Groups';
 import {createGroup} from '../screens/Groups'
 import Friends from '../screens/Friends';
@@ -13,7 +11,7 @@ import Inbox from '../screens/Inbox';
 import Profile from '../screens/Profile';
 import { Ionicons } from '@expo/vector-icons';
 import { Overlay, Text, Button, Input } from 'react-native-elements';
-
+import * as SecureStore from 'expo-secure-store';
 
 
 const BottomTab = createBottomTabNavigator();
@@ -34,7 +32,7 @@ export default function BottomTabNavigator({ navigation, route }) {
 
   return (
     <React.Fragment>
-      <GroupDialogModal isVisible = {modal} onClose = {() => toggleModal(false)} onSubmit = {(groupName,league) => {toggleModal(false); createGroup("lewiss",groupName,league)}}/>
+      <GroupDialogModal isVisible = {modal} onClose = {() => toggleModal(false)} onSubmit = {(groupName,league) => {toggleModal(false); createGroup(SecureStore.getItemAsync("key").then((response) => {return(response)}),groupName,league)}}/>
 
       <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME} tabBarOptions = {{style: {height:55}}}>
         <BottomTab.Screen

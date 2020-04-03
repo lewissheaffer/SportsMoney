@@ -15,13 +15,14 @@ export default class Authentication extends Component{
 
   render(){
     /*SecureStore.getItemAsync('key').then((response) => {
-      if(response !== undefined){
+      if(response !== null){
         this.setState({isLoggedIn: true});
       }
     });*/
     if(this.state.isLoggedIn == false){
       return <AuthenticationSequence/>;
-    }else{
+    }
+    else{
       return <Secured/>;
     }
   }
