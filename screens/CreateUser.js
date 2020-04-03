@@ -42,7 +42,7 @@ export default class CreateUser extends Component{
         alert('Account created.');
         this.props.page('Login');
       }else if(json.error){
-        alert(json.error.text());
+        alert('Error creating account.');
       }else{
         alert('An unknown error has occurred.');
       }

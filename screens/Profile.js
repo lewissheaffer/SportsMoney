@@ -2,9 +2,10 @@ import * as React from 'react';
 import { Text, ListItem } from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Avatar } from 'react-native-elements';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Button } from 'react-native';
 import Colors from '../constants/Colors';
 import { Logs } from 'expo';
+import * as SecureStore from 'expo-secure-store';
 
 
 
@@ -53,7 +54,7 @@ export default function Profile() {
                     <Text style={styles.topTextCenter} >Groups</Text>
                     <Text style={styles.topTextCenter} >0</Text>
                 </View>
-                
+
 
 
 
@@ -71,12 +72,12 @@ export default function Profile() {
 
             </View>
 
-        
+
 
             <View style={{marginTop: 40}} >
-        
+
                 {list.map((item, i) => (
-                    <ListItem 
+                    <ListItem
                     containerStyle={styles.blue}
                     key={i}
                     onPress
@@ -88,6 +89,7 @@ export default function Profile() {
                     />
 
                 ))}
+                <Button title='logout' onPress={() => SecureStore.deleteItemAsync('key')}/>
             </View>
 
 

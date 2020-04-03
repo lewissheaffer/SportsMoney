@@ -32,7 +32,7 @@ export default function BottomTabNavigator({ navigation, route }) {
 
   return (
     <React.Fragment>
-      <GroupDialogModal isVisible = {modal} onClose = {() => toggleModal(false)} onSubmit = {(groupName,league) => {toggleModal(false); createGroup(SecureStore.getItemAsync("key").then((response) => {return(response)}),groupName,league)}}/>
+      <GroupDialogModal isVisible = {modal} onClose = {() => toggleModal(false)} onSubmit = {(groupName,league) => {toggleModal(false); createGroup(groupName,league)}}/>
 
       <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME} tabBarOptions = {{style: {height:55}}}>
         <BottomTab.Screen

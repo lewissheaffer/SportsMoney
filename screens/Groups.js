@@ -14,35 +14,37 @@ export default class Groups extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchGroups("lewiss")
+    this.fetchGroups();
   }
 
-  fetchGroups(username) {
-    try{
-      console.log("fetching groups");
-      let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_groups', {
-        method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: username,
-          }),
-      })
-      .then((response) => response.json())
-      .then((json) => {
-        this.setState({list:json});
-        this.setState({refreshing:false});
-      });
-    }catch(err){
-      console.log(err);
-    }
+  fetchGroups() {
+    SecureStore.getItemAsync('key').then((ukey) => {
+      try{
+        console.log("fetching groups");
+        let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_groups', {
+          method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              ukey: ukey
+            }),
+        })
+        .then((response) => response.json())
+        .then((json) => {
+          this.setState({list:json});
+          this.setState({refreshing:false});
+        });
+      }catch(err){
+        console.log(err);
+      }
+    });
   }
 
   refreshList() {
     this.setState({refreshing: true});
-    this.fetchGroups(SecureStore.getItemAsync("key").then((response) => {return(response)}));
+    this.fetchGroups();
   }
 
   render() {
@@ -58,7 +60,8 @@ export default class Groups extends React.Component {
   }
 }
 
-export function createGroup(username, name, sport) {
+export function createGroup(name, sport) {
+  SecureStore.getItemAsync('key').then((ukey) => {
     try{
       console.log("fetching groups");
       let response = fetch('https://sportsmoneynodejs.appspot.com/create_group', {
@@ -68,7 +71,7 @@ export function createGroup(username, name, sport) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            username: username,
+            ukey: ukey,
             name: name,
             sport: sport,
           }),
@@ -76,4 +79,5 @@ export function createGroup(username, name, sport) {
     }catch(err){
       console.log(err);
     }
+  });
 }
