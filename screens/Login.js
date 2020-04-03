@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {View, TouchableOpacity, Text, TextInput, StatusBar, StyleSheet, ActivityIndicator, Alert} from 'react-native';
+import {View,
+  TouchableOpacity,
+  Text,
+  TextInput,
+  StatusBar,
+  StyleSheet,
+  ActivityIndicator,
+  Alert} from 'react-native';
 
 export default class Login extends Component{
 
@@ -8,11 +15,12 @@ export default class Login extends Component{
     this.state = {
       username: '',
       password: '',
-      isLoggingIn: false
+      isLoggingIn: false,
     };
+    this.props.page('Login');
   }
 
-  Authenticate = () => {
+  authenticate = () => {
     this.setState({isLoggingIn: true});
     fetch('https://sportsmoneynodejs.appspot.com/login', {
       method: 'POST',
@@ -28,7 +36,7 @@ export default class Login extends Component{
     .then((response) => response.json())
     .then((json) => {
       if(json.key){
-        SecureStore.setItemAsync('auth', json.key);
+        SecureStore.setItemAsync('key', json.key);
       }else{
         alert('Incorrect username or password.');
       }
@@ -43,13 +51,16 @@ export default class Login extends Component{
         <Text style={styles.Logo}>
           SportsMoney
         </Text>
+        <Text style={styles.Subtitle}>
+          Login
+        </Text>
         <TextInput style={styles.TextInput} placeholder='Username' onChangeText={username => this.setState({username})}/>
         <TextInput style={styles.TextInput} placeholder='Password' secureTextEntry={true} onChangeText={password => this.setState({password})}/>
-        <TouchableOpacity style={styles.LoginButton} disabled={this.state.isLoggingIn || !this.state.username || !this.state.password} onPress={this.Authenticate}>
+        <TouchableOpacity style={styles.LoginButton} disabled={this.state.isLoggingIn || !this.state.username || !this.state.password} onPress={this.authenticate}>
           <Text style={styles.LoginButtonText}>Login</Text>
           {this.state.isLoggingIn && <ActivityIndicator color='dodgerblue'/>}
         </TouchableOpacity>
-        <Text style={styles.CreateAccount}>
+        <Text style={styles.CreateAccount} onPress={() => this.props.page('CreateUser')}>
           Create Account
         </Text>
       </View>
@@ -70,6 +81,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 48,
     paddingBottom: 55,
+    textAlign: 'center'
+  },
+
+  Subtitle: {
+    color: 'white',
+    fontSize: 24,
+    paddingBottom: 10,
     textAlign: 'center'
   },
 

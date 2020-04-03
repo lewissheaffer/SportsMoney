@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 import { Platform, StatusBar, StyleSheet, View, Button, Modal} from 'react-native';
 import { SplashScreen } from 'expo';
 import * as Font from 'expo-font';
@@ -10,6 +10,10 @@ import BottomTabNavigator from '../navigation/BottomTabNavigator';
 import useLinking from '../navigation/useLinking';
 
 export default class Secured extends Component{
+
+  constructor(props){
+    super(props);
+  }
 
   render(){
     return (
@@ -23,8 +27,6 @@ export default class Secured extends Component{
       </View>
     );
   }
-
-
 
 }
 
