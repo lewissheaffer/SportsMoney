@@ -25,7 +25,7 @@ export default class CreateUser extends Component{
 
   createAccount = () => {
     this.setState({isCreatingUser: true});
-    fetch('https://sportsmoneynodejs.appspot.com/create_user', {
+    fetch('https://sportsmoneynodejs.appspot.com/create_account', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -39,6 +39,7 @@ export default class CreateUser extends Component{
     .then((response) => response.json())
     .then((json) => {
       if(json.success){
+        alert('Account created.');
         this.props.page('Login');
       }else if(json.error){
         alert(json.error);
