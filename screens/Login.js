@@ -37,11 +37,12 @@ export default class Login extends Component{
     .then((response) => response.json())
     .then((json) => {
       if(json[0].ukey){
+         alert(json[0].ukey);
         SecureStore.setItemAsync('key', json[0].ukey);
-        this.props.page('Authentication');
+        this.props.rerender();
       }else{
-        alert(json);
-        //alert('Incorrect username or password.');
+        //alert(json);
+        alert('Incorrect username or password.');
       }
       this.setState({isLoggingIn: false});
     });
