@@ -6,9 +6,9 @@ import { StyleSheet, View, Button } from 'react-native';
 import Colors from '../constants/Colors';
 import { Logs } from 'expo';
 import * as SecureStore from 'expo-secure-store';
+import Authentication from '../components/Authentication'
 
-
-
+import Groups from '../screens/Groups';
 
 const list = [
 
@@ -20,94 +20,69 @@ const list = [
 
 ]
 
+export default class Profile extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+    }
+  }
 
-export default function Profile() {
-
+  render() {
     return (
+      <ScrollView style={styles.blue} >
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}>
+          <View style={{ flexDirection: 'column' }}>
+            <Avatar
+              size="large"
+              rounded
+              title="DI"
+              activeOpacity={0.7}
+              containerStyle={styles.margin10}
+            />
+          </View>
+          <View style={{ flexDirection: 'column' }}>
+            <Text style={styles.topTextCenter} >Points</Text>
+            <Text style={styles.topTextCenter} >1000</Text>
+          </View>
+          <View style={{ flexDirection: 'column' }}>
+            <Text style={styles.topTextCenter} >Friends</Text>
+            <Text style={styles.topTextCenter} >2</Text>
+          </View>
+          <View style={{ flexDirection: 'column' }}>
+            <Text style={styles.topTextCenter} >Groups</Text>
+            <Text style={styles.topTextCenter} >0</Text>
+          </View>
+        </View>
 
-        <ScrollView style={styles.blue} >
-
-
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}>
-
-                <View style={{ flexDirection: 'column' }}>
-                    <Avatar
-                        size="large"
-                        rounded
-                        title="DI"
-                        activeOpacity={0.7}
-                        containerStyle={styles.margin10}
-                    />
-
-                </View>
-
-
-                <View style={{ flexDirection: 'column' }}>
-                    <Text style={styles.topTextCenter} >Points</Text>
-                    <Text style={styles.topTextCenter} >1000</Text>
-                </View>
-                <View style={{ flexDirection: 'column' }}>
-                    <Text style={styles.topTextCenter} >Friends</Text>
-                    <Text style={styles.topTextCenter} >2</Text>
-                </View>
-                <View style={{ flexDirection: 'column' }}>
-                    <Text style={styles.topTextCenter} >Groups</Text>
-                    <Text style={styles.topTextCenter} >0</Text>
-                </View>
-
-
-
-
-
-            </View>
-
-            <View style={{ flexDirection: 'column'}}>
-
-                <Text style={styles.margin5}>
-                    David Imhoff
-                </Text>
-                <Text style={styles.margin5}>
-                Bio: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer fermentum enim elit, nec venenatis nisl euismod pulvinar. Donec pharetra sem et odio blandit lacinia. Nam.
-                </Text>
-
-            </View>
-
-
-
-            <View style={{marginTop: 40}} >
-
-                {list.map((item, i) => (
-                    <ListItem
-                    containerStyle={styles.blue}
-                    key={i}
-                    onPress
-                    title={item.name}
-                    chevron
-                    onPress={() => console.log('Pressed '+i)}
-                    topDivider
-                    bottomDivider
-                    />
-
-                ))}
-                <Button title='logout' onPress={() => SecureStore.deleteItemAsync('key')}/>
-            </View>
-
-
-
-
-
-
-        </ScrollView>
-
-
-
-
+        <View style={{ flexDirection: 'column'}}>
+          <Text style={styles.margin5}>
+            David Imhoff
+          </Text>
+          <Text style={styles.margin5}>
+            Bio: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer fermentum enim elit, nec venenatis nisl euismod pulvinar. Donec pharetra sem et odio blandit lacinia. Nam.
+          </Text>
+        </View>
+        <View style={{marginTop: 40}} >
+          {list.map((item, i) => (
+              <ListItem
+              containerStyle={styles.blue}
+              key={i}
+              onPress
+              title={item.name}
+              chevron
+              onPress={() => console.log('Pressed '+i)}
+              topDivider
+              bottomDivider
+              />
+          ))}
+          <Button title='logout' onPress={() => {SecureStore.deleteItemAsync('key'); this.props.navigation.navigate("Login");}}/>
+        </View>
+      </ScrollView>
     );
-
+  }
 }
 
 const styles = StyleSheet.create({
-
     blue: {
         backgroundColor: Colors.tintColor
     },

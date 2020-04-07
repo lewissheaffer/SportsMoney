@@ -18,7 +18,6 @@ export default class Login extends Component{
       password: '',
       isLoggingIn: false,
     };
-    this.props.page('Login');
   }
 
   authenticate = () => {
@@ -38,7 +37,7 @@ export default class Login extends Component{
     .then((json) => {
       if(json[0].ukey){
         SecureStore.setItemAsync('key', json[0].ukey);
-        this.props.submitClicked();
+        this.props.navigation.navigate("BottomTabNavigator");
       }else{
         alert('Incorrect username or password.');
       }
@@ -62,7 +61,7 @@ export default class Login extends Component{
           <Text style={styles.LoginButtonText}>Login</Text>
           {this.state.isLoggingIn && <ActivityIndicator color='dodgerblue'/>}
         </TouchableOpacity>
-        <Text style={styles.CreateAccount} onPress={() => this.props.page('CreateUser')}>
+        <Text style={styles.CreateAccount} onPress={() => this.props.navigation.navigate("CreateUser")}>
           Create Account
         </Text>
       </View>

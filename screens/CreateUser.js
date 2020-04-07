@@ -20,7 +20,6 @@ export default class CreateUser extends Component{
       passwordCopy: '',
       isCreatingUser: false
     };
-    this.props.page('CreateUser');
   }
 
   createAccount = () => {
@@ -40,7 +39,7 @@ export default class CreateUser extends Component{
     .then((json) => {
       if(json.success){
         alert('Account created.');
-        this.props.page('Login');
+        this.props.navigation.navigate('Login');
       }else if(json.error){
         alert('Error creating account.');
       }else{
@@ -67,7 +66,7 @@ export default class CreateUser extends Component{
           <Text style={styles.CreateUserButtonText}>Create Account</Text>
           {this.state.isCreatingUser && <ActivityIndicator color='dodgerblue'/>}
         </TouchableOpacity>
-        <Text style={styles.BackToLogin} onPress={() => this.props.page('Login')}>
+        <Text style={styles.BackToLogin} onPress={() => this.props.navigation.navigate('Login')}>
           Back to Login
         </Text>
       </View>

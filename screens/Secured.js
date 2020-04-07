@@ -5,9 +5,11 @@ import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import Groups from '../screens/Groups';
+import Profile from '../screens/Profile';
 
 import BottomTabNavigator from '../navigation/BottomTabNavigator';
-import useLinking from '../navigation/useLinking';
+
 
 const Stack = createStackNavigator();
 
@@ -24,8 +26,9 @@ export default class Secured extends Component{
       <View style={styles.container}>
         {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
         <NavigationContainer >
-          <Stack.Navigator>
-            <Stack.Screen name="test" options = {{headerTitleAlign: 'center', headerTitleStyle: {fontSize:22}, }} component={BottomTabNavigator}/>
+          <Stack.Navigator initialRouteName="Groups">
+            <Stack.Screen name="Profile" options = {{headerTitleAlign: 'center', headerTitleStyle: {fontSize:22}, }} component={Profile}/>
+            <Stack.Screen name="Groups" options = {{headerTitleAlign: 'center', headerTitleStyle: {fontSize:22}, }} component={Groups}/>
           </Stack.Navigator>
         </NavigationContainer>
       </View>

@@ -25,7 +25,7 @@ export default function BottomTabNavigator({ navigation, route }) {
   // Set the header title on the parent stack navigator depending on the
   // currently active tab. Learn more in the documentation:
   // https://reactnavigation.org/docs/en/screen-options-resolution.html
-  navigation.setOptions({ headerTitle: getHeaderTitle(route), headerRight: () => (
+  navigation.setOptions({ headerTitle: getHeaderTitle(route), headerLeft: null, headerRight: () => (
     //So the "Icon only gets displayed when"
     (getHeaderTitle(route) == "Groups") && <Ionicons name={'md-add-circle-outline'} size={35} style={{marginRight:20, }} onPress = {() => {toggleModal(true)}}/> )
   });
