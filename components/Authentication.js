@@ -4,7 +4,6 @@ import {View, StyleSheet} from 'react-native';
 
 import Login from '../screens/Login';
 import CreateUser from '../screens/CreateUser';
-import Secured from '../screens/Secured';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -18,18 +17,7 @@ export default class Authentication extends Component{
 
   constructor(props){
     super(props);
-    this.state = {
-      page: this.authenticate(),
-    }
-  }
-
-  authenticate = () => {
-    SecureStore.getItemAsync('key').then((response) => {
-      if(response !== null) {
-        return("BottomTabNavigator");
-      }
-      return("BottomTabNavigator");
-    });
+    this.state = {}
   }
 
   render(){
@@ -37,7 +25,7 @@ export default class Authentication extends Component{
         <View style={{flex:1, backgroundColor:'white'}}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
           <NavigationContainer >
-            <Stack.Navigator initialRouteName = {this.state.page}>
+            <Stack.Navigator initialRouteName = 'Login'>
               <Stack.Screen name="Login" options = {{headerShown:false, headerTitleAlign: 'center', headerTitleStyle: {fontSize:22}, }} component={Login}/>
               <Stack.Screen name="CreateUser" options = {{headerShown:false, headerTitleAlign: 'center', headerTitleStyle: {fontSize:22}, }} component={CreateUser}/>
               <Stack.Screen name="BottomTabNavigator" options = {{headerTitleAlign: 'center', headerTitleStyle: {fontSize:22}, }} component={BottomTabNavigator}/>

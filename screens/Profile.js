@@ -6,9 +6,6 @@ import { StyleSheet, View, Button } from 'react-native';
 import Colors from '../constants/Colors';
 import { Logs } from 'expo';
 import * as SecureStore from 'expo-secure-store';
-import Authentication from '../components/Authentication'
-
-import Groups from '../screens/Groups';
 
 const list = [
 
@@ -75,7 +72,7 @@ export default class Profile extends React.Component {
               bottomDivider
               />
           ))}
-          <Button title='logout' onPress={() => {SecureStore.deleteItemAsync('key'); this.props.navigation.navigate("Login");}}/>
+          <Button title='logout' onPress={() => {SecureStore.deleteItemAsync('key'); this.props.navigation.reset({routes:[{name: "Login"}]});;}}/>
         </View>
       </ScrollView>
     );

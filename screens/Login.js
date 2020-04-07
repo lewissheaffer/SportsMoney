@@ -6,7 +6,8 @@ import {View,
   StatusBar,
   StyleSheet,
   ActivityIndicator,
-  Alert} from 'react-native';
+  Alert,
+  Keyboard} from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 
 export default class Login extends Component{
@@ -17,7 +18,18 @@ export default class Login extends Component{
       username: '',
       password: '',
       isLoggingIn: false,
+      ready: false
     };
+  }
+
+  componentDidMount(){
+    SecureStore.getItemAsync('key').then((response) => {
+      if(response !== null) {
+        this.props.navigation.reset({routes:[{name: "BottomTabNavigator"}]});
+      }else{
+        this.setState({ready: true});
+      }
+    });
   }
 
   authenticate = () => {
@@ -37,7 +49,8 @@ export default class Login extends Component{
     .then((json) => {
       if(json[0].ukey){
         SecureStore.setItemAsync('key', json[0].ukey);
-        this.props.navigation.navigate("BottomTabNavigator");
+        Keyboard.dismiss();
+        this.props.navigation.reset({routes:[{name: "BottomTabNavigator"}]});
       }else{
         alert('Incorrect username or password.');
       }
@@ -46,26 +59,35 @@ export default class Login extends Component{
   }
 
   render(){
-    return (
-      <View style={styles.View}>
-        <StatusBar backgroundColor='dodgerblue'/>
-        <Text style={styles.Logo}>
-          SportsMoney
-        </Text>
-        <Text style={styles.Subtitle}>
-          Login
-        </Text>
-        <TextInput style={styles.TextInput} placeholder='Username' onChangeText={username => this.setState({username})}/>
-        <TextInput style={styles.TextInput} placeholder='Password' secureTextEntry={true} onChangeText={password => this.setState({password})}/>
-        <TouchableOpacity style={styles.LoginButton} disabled={this.state.isLoggingIn || !this.state.username || !this.state.password} onPress={this.authenticate}>
-          <Text style={styles.LoginButtonText}>Login</Text>
-          {this.state.isLoggingIn && <ActivityIndicator color='dodgerblue'/>}
-        </TouchableOpacity>
-        <Text style={styles.CreateAccount} onPress={() => this.props.navigation.navigate("CreateUser")}>
-          Create Account
-        </Text>
-      </View>
-    );
+    if(this.state.ready){
+      return (
+        <View style={styles.View}>
+          <StatusBar backgroundColor='dodgerblue'/>
+          <Text style={styles.Logo}>
+            SportsMoney
+          </Text>
+          <Text style={styles.Subtitle}>
+            Login
+          </Text>
+          <TextInput style={styles.TextInput} placeholder='Username' onChangeText={username => this.setState({username})}/>
+          <TextInput style={styles.TextInput} placeholder='Password' secureTextEntry={true} onChangeText={password => this.setState({password})}/>
+          <TouchableOpacity style={styles.LoginButton} disabled={this.state.isLoggingIn || !this.state.username || !this.state.password} onPress={this.authenticate}>
+            <Text style={styles.LoginButtonText}>Login</Text>
+            {this.state.isLoggingIn && <ActivityIndicator color='dodgerblue'/>}
+          </TouchableOpacity>
+          <Text style={styles.CreateAccount} onPress={() => this.props.navigation.navigate("CreateUser")}>
+            Create Account
+          </Text>
+        </View>
+      );
+    }else{
+      return (
+        <View style={styles.View}>
+          <StatusBar backgroundColor='dodgerblue'/>
+          <ActivityIndicator color='white' size='large'/>
+        </View>
+      );
+    }
   }
 
 }
