@@ -52,7 +52,7 @@ export default class Groups extends React.Component {
       <ScrollView refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
         {
           this.state.list.map((l, i) => (
-            <ListItem key={i} title={l.name} subtitle={l.sport} bottomDivider/>
+            <ListItem key={i} title={l.name} onPress = {() => {this.props.navigation.navigate("IndividualGroup")}}  subtitle={l.sport} bottomDivider/>
           ))
         }
       </ScrollView>

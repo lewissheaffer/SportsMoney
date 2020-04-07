@@ -3,13 +3,10 @@ import { useState} from 'react';
 import {View, Picker} from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import TabBarIcon from '../components/TabBarIcon';
-import GroupDialogModal from '../components/GroupDialogModal';
-import Groups from '../screens/Groups';
-import {createGroup} from '../screens/Groups'
+import GroupNavigator from '../navigation/GroupNavigator';
 import Friends from '../screens/Friends';
 import Inbox from '../screens/Inbox';
 import Profile from '../screens/Profile';
-import { Ionicons } from '@expo/vector-icons';
 import { Overlay, Text, Button, Input } from 'react-native-elements';
 import * as SecureStore from 'expo-secure-store';
 
@@ -18,28 +15,25 @@ const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Groups';
 
 export default function BottomTabNavigator({ navigation, route }) {
-
-  const [modal, toggleModal] = useState(false);
-  const [selectedValue, setSelectedValue] = useState("NBA");
-
   // Set the header title on the parent stack navigator depending on the
   // currently active tab. Learn more in the documentation:
   // https://reactnavigation.org/docs/en/screen-options-resolution.html
-  navigation.setOptions({ headerTitle: getHeaderTitle(route), headerLeft: null, headerRight: () => (
-    //So the "Icon only gets displayed when"
-    (getHeaderTitle(route) == "Groups") && <Ionicons name={'md-add-circle-outline'} size={35} style={{marginRight:20, }} onPress = {() => {toggleModal(true)}}/> )
-  });
+  navigation.setOptions({ headerShown: getHeaderTitle(route) !== "Groups", headerTitle: getHeaderTitle(route), headerLeft: null});
 
   return (
     <React.Fragment>
-      <GroupDialogModal isVisible = {modal} onClose = {() => toggleModal(false)} onSubmit = {(groupName,league) => {toggleModal(false); createGroup(groupName,league)}}/>
+
 
       <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME} tabBarOptions = {{style: {height:55}}}>
         <BottomTab.Screen
           name="Groups"
-          component={Groups}
+          component={GroupNavigator}
+          header={{
+            visible:false,
+          }}
           options={{
             title: 'Groups',
+            headerShown:false,
             tabBarIcon: ({focused}) => <TabBarIcon focused={focused} name="md-basketball"/>,
           }}
         />
