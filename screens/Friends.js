@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Text, ListItem} from 'react-native-elements';
-import {View, Button, ScrollView, RefreshControl} from 'react-native';
+import {View, Button, ScrollView, RefreshControl, Alert} from 'react-native';
 import {useState} from 'react';
 import * as SecureStore from 'expo-secure-store';
 
@@ -51,7 +51,7 @@ export default class Friends extends React.Component {
       <ScrollView refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
         {
           this.state.list.map((l, i) => (
-            <ListItem key={i} title={l.name} onPress = {() => {this.props.navigation.navigate("IndividualFriend")}}  subtitle={l.username} bottomDivider/>
+            <ListItem key={i} title={l.first_name + ' ' + l.last_name} onPress = {() => {this.props.navigation.navigate("IndividualFriend")}}  subtitle={l.username} bottomDivider/>
           ))
         }
       </ScrollView>
@@ -73,6 +73,12 @@ export function addFriend(username) {
             username: username,
           }),
       })
+      .then((response) => response.json())
+      .then((json) => {
+        if(json.already_friends){
+          alert('You are already friends with this user.');
+        }
+      });
     }catch(err){
       console.log(err);
     }

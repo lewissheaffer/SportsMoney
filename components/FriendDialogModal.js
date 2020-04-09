@@ -26,6 +26,10 @@ export default class FriendDialogModal extends React.Component {
             username: username,
           }),
       })
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({exists: json.exists});
+      });
     }catch(err){
       console.log(err);
     }
@@ -40,7 +44,7 @@ export default class FriendDialogModal extends React.Component {
           <View style = {{flexDirection:'row-reverse', alignSelf: "flex-end"}}>
             <View style={{width: 80}}>
               <Button title = {"Submit"} type = {'clear'} disabled={!this.state.exists} onPress = {() => {
-                this.setState({exist:add(friend)});
+                addFriend(this.state.username); this.props.onClose(); this.setState({exists: false});
               }}/>
             </View>
             <View style={{width: 80}}>
