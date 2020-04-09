@@ -7,7 +7,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Friends from '../screens/Friends';
 import IndividualFriend from '../screens/IndividualFriend';
 import { Ionicons } from '@expo/vector-icons';
-import {createFriend} from '../screens/Friends'
 
 const Stack = createStackNavigator();
 export default class FriendsNavigator extends Component{

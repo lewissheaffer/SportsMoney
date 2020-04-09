@@ -20,7 +20,6 @@ export default class Groups extends React.Component {
   fetchGroups() {
     SecureStore.getItemAsync('key').then((ukey) => {
       try{
-        console.log("fetching groups");
         let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_groups', {
           method: 'POST',
             headers: {
@@ -63,7 +62,6 @@ export default class Groups extends React.Component {
 export function createGroup(name, sport) {
   SecureStore.getItemAsync('key').then((ukey) => {
     try{
-      console.log("fetching groups");
       let response = fetch('https://sportsmoneynodejs.appspot.com/create_group', {
         method: 'POST',
           headers: {
