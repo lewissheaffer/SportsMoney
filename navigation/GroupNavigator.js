@@ -15,7 +15,6 @@ export default class GroupNavigator extends Component{
     super(props);
     this.state = {
       modal:false,
-      selectedValue:'NBA',
     }
   }
 

@@ -4,6 +4,7 @@ import {View, Picker} from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import TabBarIcon from '../components/TabBarIcon';
 import GroupNavigator from '../navigation/GroupNavigator';
+import FriendsNavigator from '../navigation/FriendsNavigator';
 import Friends from '../screens/Friends';
 import Inbox from '../screens/Inbox';
 import Profile from '../screens/Profile';
@@ -18,7 +19,7 @@ export default function BottomTabNavigator({ navigation, route }) {
   // Set the header title on the parent stack navigator depending on the
   // currently active tab. Learn more in the documentation:
   // https://reactnavigation.org/docs/en/screen-options-resolution.html
-  navigation.setOptions({ headerShown: getHeaderTitle(route) !== "Groups", headerTitle: getHeaderTitle(route), headerLeft: null});
+  navigation.setOptions({ headerShown: (getHeaderTitle(route) !== "Groups") && (getHeaderTitle(route) !== "Friends"), headerTitle: getHeaderTitle(route), headerLeft: null});
 
   return (
     <React.Fragment>
@@ -39,9 +40,13 @@ export default function BottomTabNavigator({ navigation, route }) {
         />
         <BottomTab.Screen
           name="Friends"
-          component={Friends}
+          component={FriendsNavigator}
+          header={{
+            visible:false,
+          }}
           options={{
             title: 'Friends',
+            headerShown:false,
             tabBarIcon: ({focused}) => <TabBarIcon focused={focused} name="md-people"/>,
           }}
         />
