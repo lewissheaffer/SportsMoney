@@ -16,6 +16,8 @@ export default class CreateUser extends Component{
     super(props);
     this.state = {
       username: '',
+      first_name: '',
+      last_name: '',
       password: '',
       passwordCopy: '',
       isCreatingUser: false
@@ -32,6 +34,8 @@ export default class CreateUser extends Component{
       },
       body: JSON.stringify({
         username: this.state.username,
+        first_name: this.state.first_name,
+        last_name: this.state.last_name,
         password: this.state.password
       }),
     })
@@ -60,9 +64,11 @@ export default class CreateUser extends Component{
           Create Account
         </Text>
         <TextInput style={styles.TextInput} placeholder='Username (max 20 characters)' onChangeText={username => this.setState({ username })}/>
+        <TextInput style={styles.TextInput} placeholder='First Name (max 20 characters)' onChangeText={first_name => this.setState({ first_name })}/>
+        <TextInput style={styles.TextInput} placeholder='Last Name (max 20 characters)' onChangeText={last_name => this.setState({ last_name })}/>
         <TextInput style={styles.TextInput} placeholder='Password' onChangeText={password => this.setState({ password })} secureTextEntry={true}/>
         <TextInput style={styles.TextInput} placeholder='Enter password again'onChangeText={passwordCopy => this.setState({ passwordCopy })} secureTextEntry={true}/>
-        <TouchableOpacity style={styles.CreateUserButton} disabled={!this.state.username || !this.state.password || !this.state.password || this.state.password != this.state.passwordCopy || this.state.username.length > 20} onPress={this.createAccount}>
+        <TouchableOpacity style={styles.CreateUserButton} disabled={!this.state.username || !this.state.first_name || !this.state.last_name || !this.state.password || !this.state.password || this.state.password != this.state.passwordCopy || this.state.username.length > 20 || this.state.first_name.length > 20 || this.state.last_name.length > 20} onPress={this.createAccount}>
           <Text style={styles.CreateUserButtonText}>Create Account</Text>
           {this.state.isCreatingUser && <ActivityIndicator color='dodgerblue'/>}
         </TouchableOpacity>
