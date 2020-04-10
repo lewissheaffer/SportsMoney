@@ -13,7 +13,6 @@ const list = [
     {name: 'Change Password'},
     {name: 'Add Friends'},
     {name: 'Notifications'},
-    {name: 'Sign Out'}
 
 ]
 
@@ -61,18 +60,23 @@ export default class Profile extends React.Component {
         </View>
         <View style={{marginTop: 40}} >
           {list.map((item, i) => (
-              <ListItem
-              containerStyle={styles.blue}
-              key={i}
-              onPress
-              title={item.name}
-              chevron
-              onPress={() => console.log('Pressed '+i)}
-              topDivider
-              bottomDivider
-              />
+            <ListItem
+            containerStyle={styles.blue}
+            key={i}
+            title={item.name}
+            chevron
+            topDivider
+            bottomDivider
+            />
           ))}
-          <Button title='logout' onPress={() => {SecureStore.deleteItemAsync('key'); this.props.navigation.reset({routes:[{name: "Login"}]});;}}/>
+          <ListItem
+          containerStyle={styles.blue}
+          onPress={() => {SecureStore.deleteItemAsync('key'); this.props.navigation.reset({routes:[{name: "Login"}]});}}
+          title={'Sign Out'}
+          chevron
+          topDivider
+          bottomDivider
+          />
         </View>
       </ScrollView>
     );
