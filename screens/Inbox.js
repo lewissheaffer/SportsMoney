@@ -34,6 +34,7 @@ export default class Inbox extends React.Component {
         .then((json) => {
           this.setState({list:json});
           this.setState({refreshing:false});
+          console.log(json)
         });
       }catch(err){
         console.log(err);
@@ -46,14 +47,61 @@ export default class Inbox extends React.Component {
     this.fetchMessages();
   }
 
+  sendResponse(senderUsername, accepted) { 
+    SecureStore.getItemAsync('key').then((ukey) => {
+      try{
+        let response = fetch('https://sportsmoneynodejs.appspot.com/handle_friend_request', {
+          method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              ukey: ukey,
+              accepted: accepted,
+              type: 'friend',
+              senderUsername: senderUsername
+            }),
+        })
+        .then((response) => response.json())
+        .then((json) => {
+          this.refreshList();
+          
+        });
+      }catch(err){
+        console.log(err);
+      }
+    });
+  }
+
   render() {
     return (
       <ScrollView refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
         {
-          this.state.list.map((l, i) => (
-            <ListItem key={i} title={l.first_name + ' ' + l.last_name + ': ' + l.subject} onPress = {() => {this.props.navigation.navigate("Message")}}  subtitle={l.username} bottomDivider/>
+        
+          this.state.list.map((l, i) => ( 
+          
+            <ListItem key={i} title={'From: ' + l.username } onPress = {() => {this.props.navigation.navigate("Message")}}  subtitle={
+        
+         l.type=='friend' &&  <View >
+          <Button  title ='Accept' onPress={() => {this.sendResponse(l.username, true)}}/>
+          <Button title ="Decline" onPress={() => {this.sendResponse(l.username, false)}}/>
+          
+        </View>
+
+
+      }
+       bottomDivider
+             
+               />
+              //accepted to true or false call 'handle_friend_request'
+              //pass senderUsername
+
+            
           ))
         }
+
+        
       </ScrollView>
     );
   }
