@@ -9,6 +9,7 @@ import {Text,
   AppRegistry,
   Alert,
   ActivityIndicator} from 'react-native';
+import {Input} from 'react-native-elements';
 
 export default class CreateUser extends Component{
 
@@ -20,8 +21,30 @@ export default class CreateUser extends Component{
       last_name: '',
       password: '',
       passwordCopy: '',
-      isCreatingUser: false
+      isCreatingUser: false,
+      usernameExists:false,
     };
+  }
+
+  checkUser = (username) => {
+    try{
+      let response = fetch('https://sportsmoneynodejs.appspot.com/check_user', {
+        method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: username,
+          }),
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({usernameExists: json.exists});
+      });
+    }catch(err){
+      console.log(err);
+    }
   }
 
   createAccount = () => {
@@ -63,12 +86,16 @@ export default class CreateUser extends Component{
         <Text style={styles.Subtitle}>
           Create Account
         </Text>
+        <TextInput style = {styles.TextInput} onChangeText = {(text) => {this.setState({username:text}); this.checkUser(text)}} placeholder = "Friend's username" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.exists ? '' : 'User does not exist.'} />
+        {
+          this.state.usernameExists && <Text style = {styles.ErrorText}>Username already exists</Text>
+        }
         <TextInput style={styles.TextInput} placeholder='Username (max 20 characters)' onChangeText={username => this.setState({ username })}/>
         <TextInput style={styles.TextInput} placeholder='First Name (max 20 characters)' onChangeText={first_name => this.setState({ first_name })}/>
         <TextInput style={styles.TextInput} placeholder='Last Name (max 20 characters)' onChangeText={last_name => this.setState({ last_name })}/>
         <TextInput style={styles.TextInput} placeholder='Password' onChangeText={password => this.setState({ password })} secureTextEntry={true}/>
         <TextInput style={styles.TextInput} placeholder='Enter password again'onChangeText={passwordCopy => this.setState({ passwordCopy })} secureTextEntry={true}/>
-        <TouchableOpacity style={styles.CreateUserButton} disabled={!this.state.username || !this.state.first_name || !this.state.last_name || !this.state.password || !this.state.password || this.state.password != this.state.passwordCopy || this.state.username.length > 20 || this.state.first_name.length > 20 || this.state.last_name.length > 20} onPress={this.createAccount}>
+        <TouchableOpacity style={styles.CreateUserButton} disabled={this.state.usernameExists || !this.state.username || !this.state.first_name || !this.state.last_name || !this.state.password || !this.state.password || this.state.password != this.state.passwordCopy || this.state.username.length > 20 || this.state.first_name.length > 20 || this.state.last_name.length > 20} onPress={this.createAccount}>
           <Text style={styles.CreateUserButtonText}>Create Account</Text>
           {this.state.isCreatingUser && <ActivityIndicator color='dodgerblue'/>}
         </TouchableOpacity>
@@ -111,6 +138,14 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginBottom: 10
   },
+  ErrorText: {
+    color: 'red',
+    alignSelf: 'center',
+    borderRadius: 10,
+    marginLeft: 12,
+    marginRight: 10,
+    marginBottom: 10
+  },
 
   CreateUserButton: {
     flexDirection: 'row',
@@ -121,6 +156,30 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     marginBottom: 10
+  },
+
+  input_container:{
+    textAlign:'left',
+    fontSize: 16,
+    color: 'rgba(0,0,0,0.54)',
+    ...Platform.select({
+      ios: {
+        backgroundColor: 'white',
+        borderRadius: 5,
+        paddingTop: 5,
+        borderWidth: 1,
+        borderColor: '#B0B0B0',
+        paddingBottom: 5,
+        paddingLeft: 10,
+        marginBottom: 15,
+        marginTop: 10,
+      },
+      android: {
+        marginTop: 8,
+        borderBottomWidth: 2,
+        borderColor: 'dodgerblue',
+      },
+    }),
   },
 
   CreateUserButtonText: {

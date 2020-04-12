@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { Text, ListItem} from 'react-native-elements';
-import {View, Button, ScrollView, RefreshControl, Alert} from 'react-native';
+import {View, Button, ScrollView, RefreshControl, Alert, TouchableOpacity} from 'react-native';
 import {useState} from 'react';
 import * as SecureStore from 'expo-secure-store';
+import { Ionicons } from '@expo/vector-icons';
 
 export default class Inbox extends React.Component {
   constructor(props) {
@@ -34,7 +35,6 @@ export default class Inbox extends React.Component {
         .then((json) => {
           this.setState({list:json});
           this.setState({refreshing:false});
-          console.log(json)
         });
       }catch(err){
         console.log(err);
@@ -47,7 +47,7 @@ export default class Inbox extends React.Component {
     this.fetchMessages();
   }
 
-  sendResponse(senderUsername, accepted) { 
+  sendResponse(senderUsername, accepted) {
     SecureStore.getItemAsync('key').then((ukey) => {
       try{
         let response = fetch('https://sportsmoneynodejs.appspot.com/handle_friend_request', {
@@ -66,7 +66,7 @@ export default class Inbox extends React.Component {
         .then((response) => response.json())
         .then((json) => {
           this.refreshList();
-          
+
         });
       }catch(err){
         console.log(err);
@@ -78,30 +78,33 @@ export default class Inbox extends React.Component {
     return (
       <ScrollView refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
         {
-        
-          this.state.list.map((l, i) => ( 
-          
-            <ListItem key={i} title={'From: ' + l.username } onPress = {() => {this.props.navigation.navigate("Message")}}  subtitle={
-        
-         l.type=='friend' &&  <View >
-          <Button  title ='Accept' onPress={() => {this.sendResponse(l.username, true)}}/>
-          <Button title ="Decline" onPress={() => {this.sendResponse(l.username, false)}}/>
-          
-        </View>
 
-
+          this.state.list.map((l, i) => (
+          //onPress={() => {this.sendResponse(l.username, true)}}
+            <ListItem key={i}  subtitle={
+               l.type=='friend' && <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                <Text style = {{fontSize: 17,}}>{'Friend Request From: ' + l.username}</Text>
+                 <View style = {{flexDirection:'row', alignSelf: "flex-end"}}>
+                   <TouchableOpacity onPress = {() => {this.sendResponse(l.username, true)}}>
+                      <Ionicons name={'md-checkmark-circle'} color = 'green' size={35} style={{marginRight:20, }}/>
+                   </TouchableOpacity>
+                   <TouchableOpacity onPress = {() => {this.sendResponse(l.username, false)}}>
+                      <Ionicons name={'md-close-circle'} Title="Deny" color = 'red' size={35} style={{marginRight:10, }} />
+                   </TouchableOpacity>
+                </View>
+              </View>
       }
        bottomDivider
-             
+
                />
               //accepted to true or false call 'handle_friend_request'
               //pass senderUsername
 
-            
+
           ))
         }
 
-        
+
       </ScrollView>
     );
   }
