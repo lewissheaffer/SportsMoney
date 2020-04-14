@@ -86,11 +86,10 @@ export default class CreateUser extends Component{
         <Text style={styles.Subtitle}>
           Create Account
         </Text>
-        <TextInput style = {styles.TextInput} onChangeText = {(text) => {this.setState({username:text}); this.checkUser(text)}} placeholder = "Friend's username" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.exists ? '' : 'User does not exist.'} />
+        <TextInput style = {styles.TextInput} onChangeText = {(text) => {this.setState({username:text}); this.checkUser(text)}} placeholder = "Username (max 20 characters)"/>
         {
           this.state.usernameExists && <Text style = {styles.ErrorText}>Username already exists</Text>
         }
-        <TextInput style={styles.TextInput} placeholder='Username (max 20 characters)' onChangeText={username => this.setState({ username })}/>
         <TextInput style={styles.TextInput} placeholder='First Name (max 20 characters)' onChangeText={first_name => this.setState({ first_name })}/>
         <TextInput style={styles.TextInput} placeholder='Last Name (max 20 characters)' onChangeText={last_name => this.setState({ last_name })}/>
         <TextInput style={styles.TextInput} placeholder='Password' onChangeText={password => this.setState({ password })} secureTextEntry={true}/>
