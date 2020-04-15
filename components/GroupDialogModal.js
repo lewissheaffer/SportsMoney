@@ -11,11 +11,50 @@ export default class GroupDialogModal extends React.Component {
     this.state = {
       groupName: "",
       selectedValue: "NBA",
+      exists: false,
+      sport:"",
+      Findgroupname: "",
+    }
+  }
+  checkGroup = (g_id) => {
+    try{
+      let response = fetch('https://sportsmoneynodejs.appspot.com/check_groups', {
+        method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            group_id: g_id,
+          }),
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({exists: json.exists});
+          this.setState({sport: json.sport});
+          this.setState({Findgroupname: json.name});
+      });
+    }catch(err){
+      console.log(err);
     }
   }
   render(){
     return (
-      <Overlay isVisible={this.props.isVisible} height = {250}  onBackdropPress = {() => {this.props.onClose()}}>
+      <Overlay isVisible={this.props.isVisible} height = {350}  onBackdropPress = {() => {this.props.onClose()}}>
+        <View style={{flex:1,}}>
+          <Text style = {{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}}>Enter Group id</Text>
+          <Input style = {styles.input_container} onChangeText = {(text) => {this.setState({g_id:text}); this.checkGroup(text)}} placeholder = "Group id" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.exists ? '' : 'Group does not exist.'} />
+          <View style = {{flexDirection:'row-reverse', alignSelf: "flex-end"}}>
+            <View style={{width: 80}}>
+              <Button title = {"Submit"} type = {'clear'} disabled={!this.state.exists} onPress = {() => {
+                addGroup(this.state.g_id,this.state.Findgroupname,this.state.sport); this.props.onClose(); this.setState({exists: false});
+              }}/>
+            </View>
+            <View style={{width: 80}}>
+              <Button title = {"Cancel"} type = {'clear'} onPress = {() => this.props.onClose()}/>
+            </View>
+          </View>
+        </View>
         <View style={{flex:1,}}>
           <Text style = {{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}}>Create a Group</Text>
           <TextInput style = {styles.input_container} onChangeText = {(text) => {this.setState({groupName:text})}} placeholder = "Group Name" underlineColorAndroid='transparent' />

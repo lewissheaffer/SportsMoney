@@ -10,6 +10,7 @@ export default class Groups extends React.Component {
     this.state = {
       list: [],
       refreshing: false,
+      g_id: '',
     }
   }
 
@@ -46,8 +47,11 @@ export default class Groups extends React.Component {
     this.fetchGroups();
   }
 
+
+
   render() {
     return (
+
       <ScrollView refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
         {
           this.state.list.map((l, i) => (
@@ -74,6 +78,29 @@ export function createGroup(name, sport) {
             sport: sport,
           }),
       })
+    }catch(err){
+      console.log(err);
+    }
+  });
+}
+
+export function addGroup(g_id,name,sport) {
+  SecureStore.getItemAsync('key').then((ukey) => {
+    try{
+      let response = fetch('https://sportsmoneynodejs.appspot.com/add_group', {
+        method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ukey: ukey,
+            group_id: g_id,
+            name: name,
+            sport: sport,
+          }),
+      })
+    
     }catch(err){
       console.log(err);
     }
