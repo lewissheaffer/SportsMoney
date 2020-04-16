@@ -2,7 +2,6 @@ import React, {Component, useState} from 'react';
 import * as SecureStore from 'expo-secure-store';
 import {View, StyleSheet} from 'react-native';
 import GroupDialogModal from '../components/GroupDialogModal';
-import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Groups from '../screens/Groups';
 import IndividualGroup from '../screens/IndividualGroup';

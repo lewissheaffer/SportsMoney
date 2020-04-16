@@ -54,8 +54,6 @@ export default class GroupDialogModal extends React.Component {
               <Button title = {"Cancel"} type = {'clear'} onPress = {() => this.props.onClose()}/>
             </View>
           </View>
-        </View>
-        <View style={{flex:1,}}>
           <Text style = {{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}}>Create a Group</Text>
           <TextInput style = {styles.input_container} onChangeText = {(text) => {this.setState({groupName:text})}} placeholder = "Group Name" underlineColorAndroid='transparent' />
           <Text  style = {{marginTop: 15, marginBottom: 0,}}>Select League</Text>
