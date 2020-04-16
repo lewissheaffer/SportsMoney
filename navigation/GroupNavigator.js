@@ -1,12 +1,13 @@
 import React, {Component, useState} from 'react';
 import * as SecureStore from 'expo-secure-store';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 import GroupDialogModal from '../components/GroupDialogModal';
 import { createStackNavigator } from '@react-navigation/stack';
 import Groups from '../screens/Groups';
-import IndividualGroup from '../screens/IndividualGroup';
+import IndividualGroupNavigator from './IndividualGroupNavigator';
 import { Ionicons } from '@expo/vector-icons';
 import {createGroup} from '../screens/Groups'
+import GroupUserDialogModal from "../components/GroupUserDialogModal";
 
 const Stack = createStackNavigator();
 export default class GroupNavigator extends Component{
@@ -14,6 +15,7 @@ export default class GroupNavigator extends Component{
     super(props);
     this.state = {
       modal:false,
+      inviteModalVisible:false,
     }
   }
 
@@ -21,10 +23,12 @@ export default class GroupNavigator extends Component{
       return(
         <React.Fragment>
           <GroupDialogModal isVisible = {this.state.modal} onClose = {() => {this.setState({modal:false})}} onSubmit = {(groupName,league) => {this.setState({modal:false}); createGroup(groupName,league)}}/>
+          <GroupUserDialogModal isVisible = {this.state.inviteModalVisible} onClose = {() => {this.setState({inviteModalVisible:false})}} onSubmit = {(groupName,league) => {this.setState({inviteModalVisible:false}); alert("This Modal Currently Does Nothing");}}/>
           <View style={{flex:1, backgroundColor:'white'}}>
             {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
               <Stack.Navigator initialRouteName = 'Groups'>
-                <Stack.Screen name="IndividualGroup" options = {{headerTitleAlign: 'center', headerTitleStyle: {fontSize:22}, }} component={IndividualGroup}/>
+                <Stack.Screen name="IndividualGroup" options = {{headerTitleAlign: 'center', headerTitleStyle: {fontSize:22}, headerRight: () => (
+                  <Text style={{marginRight:20, }} onPress = {() => {this.setState({inviteModalVisible:true})}}>Invite User</Text>)}} component={IndividualGroupNavigator}/>
                 <Stack.Screen name="Groups" options = {{headerTitleAlign: 'center', headerTitleStyle: {fontSize:22}, headerRight: () => (
                   <Ionicons name={'md-add-circle-outline'} size={35} style={{marginRight:20, }} onPress = {() => {this.setState({modal:true})}}/>)}} component={Groups}/>
               </Stack.Navigator>

@@ -78,7 +78,6 @@ export default class Inbox extends React.Component {
     return (
       <ScrollView refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
         {
-
           this.state.list.map((l, i) => (
           //onPress={() => {this.sendResponse(l.username, true)}}
             <ListItem key={i}  subtitle={
@@ -93,18 +92,11 @@ export default class Inbox extends React.Component {
                    </TouchableOpacity>
                 </View>
               </View>
-      }
-       bottomDivider
-
-               />
-              //accepted to true or false call 'handle_friend_request'
-              //pass senderUsername
-
-
+            }
+            bottomDivider
+            />
           ))
         }
-
-
       </ScrollView>
     );
   }
