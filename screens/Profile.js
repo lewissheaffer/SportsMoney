@@ -1,20 +1,11 @@
 import * as React from 'react';
-import { Text, ListItem } from 'react-native-elements';
+import { Text, ListItem, Input } from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Avatar } from 'react-native-elements';
-import { StyleSheet, RefreshControl, View, Button, Overlay } from 'react-native';
+import { Avatar, Overlay } from 'react-native-elements';
+import { StyleSheet, RefreshControl,  View, Button } from 'react-native';
 import Colors from '../constants/Colors';
 import { Logs } from 'expo';
 import * as SecureStore from 'expo-secure-store';
-
-const list = [
-
-    {name: 'Change Username'},
-    {name: 'Change Password'},
-    {name: 'Add Friends'},
-    {name: 'Notifications'},
-
-]
 
 export default class Profile extends React.Component {
   constructor(props) {
@@ -24,53 +15,64 @@ export default class Profile extends React.Component {
       numFriends: -1,
       numGroups: -1,
       numPoints: -1,
-      profileName: "Profile Name",
+      username: "Profile Name",
+      firstName: "First Name",
+      lastName:"Last Name",
       bio: "Biography",
       refreshing: false,
+      editingBio: false,
+
 
     }
   }
 
-  editBio(newBio) {
-    console.log("Hello");
-    SecureStore.getItemAsync('key').then((ukey) => {
-      try{
-        let response = fetch('https://sportsmoneynodejs.appspot.com/edit_bio', {
-          method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              ukey: ukey,
-              bio: newBio
-            }),
-        })
-        .then((response) => response.json())
-        .then((json) => {
-          if(json.result){
-            alert('Bio edited');
-          }
-          else {
-            alert('Error editing bio');
-          }
-        });
-      }catch(err){
-        console.log(err);
-      }
-    });
-}
+  componentDidMount() {
+    this.fetchProfile();
+  }
 
 fetchProfile() {
 
 //TODO fetch number of friends, points, and groups
  this.fetchNumFriends();
+ this.fetchNumGroups();
+ this.fetchName();
+ this.fetchBio();
 
+
+}
+
+fetchName() {
+  console.log("In fetchName");
+  SecureStore.getItemAsync('key').then((ukey) => {
+    try{
+      let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_user_by_ukey', {
+        method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ukey: ukey
+          }),
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+        this.setState({firstName:json.first_name});
+        this.setState({lastName:json.last_name});
+        this.setState({username:json.username});
+        //this.setState({refreshing:false})
+      });
+    }catch(err){
+      console.log("name error: "+err);
+    }
+  });
 
 
 }
 
 fetchNumFriends() {
+  console.log("In fetchNumFriends");
   SecureStore.getItemAsync('key').then((ukey) => {
     try{
       let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_friends', {
@@ -85,8 +87,9 @@ fetchNumFriends() {
       })
       .then((response) => response.json())
       .then((json) => {
-        console.log(json);
-        this.setState({numFriends: json.array.size});
+       // console.log(json);
+        this.setState({numFriends:json.length});
+        //this.setState({refreshing:false})
       });
     }catch(err){
       console.log(err);
@@ -94,29 +97,123 @@ fetchNumFriends() {
   });
 }
 
-refreshList() {
-  this.setState({refreshing: true});
-  this.fetchProfile();
-  this.setState({refreshing:false})
+fetchNumGroups() {
+
+  console.log("In fetch Num Groups");
+  SecureStore.getItemAsync('key').then((ukey) => {
+    try{
+      let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_groups', {
+        method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ukey: ukey
+          }),
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log("numGroups = " + json.length);
+        this.setState({numGroups: json.length});
+        this.setState({refreshing:false});
+      });
+    }catch(err){
+      console.log(err);
+    }
+  });
+
 }
 
 
-displayEditBioOverlay() {
 
-  //TODO create overlay and ask for a new bio for this profile
+fetchNumPoints() {
+
+
+//TODO , no points rn
+
+
+
+}
+
+refreshList() {
+  this.setState({refreshing: true});
+  this.fetchProfile();
+  
+}
+
+fetchBio() {
+  SecureStore.getItemAsync('key').then((ukey) => {
+    try{
+      let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_bio', {
+        method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ukey: ukey
+          }),
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+        if(json.result){
+          this.setState({bio:json.bio})
+        }
+        else {
+          alert('Error editing bio');
+        }
+      });
+    }catch(err){
+      console.log(err);
+    }
+  });
+}
+
+submitBioChange() {
+  
+  console.log("In submitBioChange");
+  SecureStore.getItemAsync('key').then((ukey) => {
+    try{
+      let response = fetch('https://sportsmoneynodejs.appspot.com/edit_bio', {
+        method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ukey: ukey,
+            bio: this.state.bio
+          }),
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+        if(json.result){
+          console.log("Success, editiing bio!!!");
+        }
+        else {
+          alert('Error editing bio');
+        }
+      });
+    }catch(err){
+      console.log(err);
+    }
+  });
 
 
 }
 
   render() {
     return (
-      <ScrollView refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>} >
+      <ScrollView  refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>} >
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}>
           <View style={{ flexDirection: 'column' }}>
             <Avatar
               size="large"
               rounded
-              title="DI"
+              title= {this.state.firstName.charAt(0) + this.state.lastName.charAt(0)}
               activeOpacity={0.7}
               containerStyle={styles.margin10}
             />
@@ -137,32 +234,55 @@ displayEditBioOverlay() {
 
         <View style={{ flexDirection: 'column'}}>
           <Text style={styles.margin5}>
-            {this.state.profileName}
+            {this.state.firstName} {this.state.lastName}
+          </Text>
+          <Text style={styles.margin5}>
+            Username: {this.state.username}
           </Text>
           <Text style={styles.margin5}>
             {this.state.bio}
           </Text>
         </View>
-        {/* <View style={{marginTop: 40}} >
-          {list.map((item, i) => (
-            <ListItem
-            containerStyle={styles.blue}
-            key={i}
-            title={item.name}
-            chevron
-            topDivider
-            bottomDivider
-            />
-          ))} */}
-
           <ListItem
-            onPress={() => {this.displayEditBioOverlay()}}
+            onPress={() => {this.setState({editingBio:true})}}
             title={"Edit Bio"}
-            onPress
             chevron
             topDivider
             bottomDivider
           />
+          <Overlay
+            isVisible={this.state.editingBio}
+            windowBackgroundColor="rgba(100,100,100,.7)"
+            height="auto"
+            onBackdropPress={() => this.setState({editingBio:false})}
+          >
+            <Text style={styles.margin10}>
+              Edit Bio
+            </Text>
+            <Input
+              placeholder='New Bio'
+              value = {this.state.bio}
+              onChangeText={(bio) => this.setState({bio})}
+            />
+            <Button
+            title="Cancel"
+            color="blue"
+            onPress={() => {
+              this.setState({editingBio:false})
+            }}></Button>
+            <Button
+             title="Confirm"
+             color="blue"
+             onPress={() => {
+               this.setState({editingBio:false})
+               this.submitBioChange()
+               }}
+            >
+            </Button>
+            
+
+          </Overlay>
+
           <ListItem
           onPress={() => {SecureStore.deleteItemAsync('key'); this.props.navigation.reset({routes:[{name: "Login"}]});}}
           title={'Sign Out'}
@@ -170,15 +290,9 @@ displayEditBioOverlay() {
           topDivider
           bottomDivider
           />
-        {/* </View> */}
       </ScrollView>
     );
   }
-
-
-
-
-
 
 }
 

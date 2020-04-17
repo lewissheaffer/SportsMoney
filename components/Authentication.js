@@ -1,6 +1,6 @@
 import React, {Component, useState} from 'react';
 import * as SecureStore from 'expo-secure-store';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Platform} from 'react-native';
 
 import Login from '../screens/Login';
 import CreateUser from '../screens/CreateUser';

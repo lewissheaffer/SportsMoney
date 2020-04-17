@@ -8,6 +8,7 @@ import {Text,
   TouchableOpacity,
   AppRegistry,
   Alert,
+  Platform,
   ActivityIndicator} from 'react-native';
 import {Input} from 'react-native-elements';
 
