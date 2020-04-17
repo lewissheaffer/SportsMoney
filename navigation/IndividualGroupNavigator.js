@@ -16,11 +16,11 @@ export default class IndividualGroupNavigator extends React.Component {
     this.props.navigation.setOptions({headerTitle: this.props.route.params.groupName});
   }
   render(){
-    return (
-      <Tab.Navigator>
-        <Tab.Screen name="Games" component={GroupGames}/>
-        <Tab.Screen name="Rankings" component={GroupRankings}/>
-      </Tab.Navigator>
-    );
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Games" component={GroupGames} initialParams={{ groupSport: this.props.route.params.groupSport }}/>
+      <Tab.Screen name="Rankings" component={GroupRankings}/>
+    </Tab.Navigator>
+  );
   }
 }
