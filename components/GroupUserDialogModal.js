@@ -44,7 +44,7 @@ export default class GroupUserDialogModal extends React.Component {
           <View style = {{flexDirection:'row-reverse', alignSelf: "flex-end"}}>
             <View style={{width: 80}}>
               <Button title = {"Submit"} type = {'clear'} disabled={!this.state.exists} onPress = {() => {
-                GroupMemberInvite(); this.props.onClose(); this.setState({exists: false});
+                GroupMemberInvite({this.props.group_id}); this.props.onClose(); this.setState({exists: false});
               }}/>
             </View>
             <View style={{width: 80}}>

@@ -54,7 +54,8 @@ export default class Groups extends React.Component {
         this.state.list.map((l, i) => (<ListItem key={i} title={l.name} onPress={() => {
             this.props.navigation.navigate("IndividualGroup", {
               groupName: l.name,
-              groupSport: l.sport
+              groupSport: l.sport,
+              group_id: l.id,
             })
           }} subtitle={l.sport} bottomDivider={true}/>))
       }

@@ -47,7 +47,7 @@ export default class Inbox extends React.Component {
     this.fetchMessages();
   }
 
-  sendResponse(type, senderUsername, accepted) {
+  sendResponse(type, senderUsername, group_id, accepted) {
     SecureStore.getItemAsync('key').then((ukey) => {
       try{
         let response = fetch('https://sportsmoneynodejs.appspot.com/handle_invite_request', {
@@ -60,7 +60,8 @@ export default class Inbox extends React.Component {
               ukey: ukey,
               accepted: accepted,
               type: type,
-              senderUsername: senderUsername
+              senderUsername: senderUsername,
+              group_id: group_id,
             }),
         })
         .then((response) => response.json())
@@ -90,10 +91,10 @@ export default class Inbox extends React.Component {
 
                }
                  <View style = {{flexDirection:'row', alignSelf: "flex-end"}}>
-                   <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, true)}}>
+                   <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, true)}}>
                       <Ionicons name={'md-checkmark-circle'} color = 'green' size={35} style={{marginRight:20, }}/>
                    </TouchableOpacity>
-                   <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, false)}}>
+                   <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, false)}}>
                       <Ionicons name={'md-close-circle'} Title="Deny" color = 'red' size={35} style={{marginRight:10, }} />
                    </TouchableOpacity>
                 </View>
