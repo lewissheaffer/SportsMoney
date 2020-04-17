@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Text, ListItem } from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Avatar } from 'react-native-elements';
-import { StyleSheet, View, Button, Overlay } from 'react-native';
+import { StyleSheet, RefreshControl, View, Button, Overlay } from 'react-native';
 import Colors from '../constants/Colors';
 import { Logs } from 'expo';
 import * as SecureStore from 'expo-secure-store';
@@ -20,9 +20,13 @@ export default class Profile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      profileName: "",
+      
+      numFriends: -1,
+      numGroups: -1,
+      numPoints: -1,
+      profileName: "Profile Name",
+      bio: "Biography",
       refreshing: false,
-
 
     }
   }
@@ -60,8 +64,34 @@ export default class Profile extends React.Component {
 fetchProfile() {
 
 //TODO fetch number of friends, points, and groups
+ this.fetchNumFriends();
 
 
+
+}
+
+fetchNumFriends() {
+  SecureStore.getItemAsync('key').then((ukey) => {
+    try{
+      let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_friends', {
+        method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ukey: ukey
+          }),
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+        this.setState({numFriends: json.array.size});
+      });
+    }catch(err){
+      console.log(err);
+    }
+  });
 }
 
 refreshList() {
@@ -70,9 +100,17 @@ refreshList() {
   this.setState({refreshing:false})
 }
 
+
+displayEditBioOverlay() {
+
+  //TODO create overlay and ask for a new bio for this profile
+
+
+}
+
   render() {
     return (
-      <ScrollView style={styles.blue} refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>} >
+      <ScrollView refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>} >
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}>
           <View style={{ flexDirection: 'column' }}>
             <Avatar
@@ -85,24 +123,24 @@ refreshList() {
           </View>
           <View style={{ flexDirection: 'column' }}>
             <Text style={styles.topTextCenter} >Points</Text>
-            <Text style={styles.topTextCenter} >1000</Text>
+            <Text style={styles.topTextCenter} >{this.state.numPoints}</Text>
           </View>
           <View style={{ flexDirection: 'column' }}>
             <Text style={styles.topTextCenter} >Friends</Text>
-            <Text style={styles.topTextCenter} >2</Text>
+            <Text style={styles.topTextCenter} >{this.state.numFriends}</Text>
           </View>
           <View style={{ flexDirection: 'column' }}>
             <Text style={styles.topTextCenter} >Groups</Text>
-            <Text style={styles.topTextCenter} >0</Text>
+            <Text style={styles.topTextCenter} >{this.state.numGroups}</Text>
           </View>
         </View>
 
         <View style={{ flexDirection: 'column'}}>
           <Text style={styles.margin5}>
-            David Imhoff
+            {this.state.profileName}
           </Text>
           <Text style={styles.margin5}>
-            Bio: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer fermentum enim elit, nec venenatis nisl euismod pulvinar. Donec pharetra sem et odio blandit lacinia. Nam.
+            {this.state.bio}
           </Text>
         </View>
         {/* <View style={{marginTop: 40}} >
@@ -118,7 +156,6 @@ refreshList() {
           ))} */}
 
           <ListItem
-            containerStyle={styles.blue}
             onPress={() => {this.displayEditBioOverlay()}}
             title={"Edit Bio"}
             onPress
@@ -127,7 +164,6 @@ refreshList() {
             bottomDivider
           />
           <ListItem
-          containerStyle={styles.blue}
           onPress={() => {SecureStore.deleteItemAsync('key'); this.props.navigation.reset({routes:[{name: "Login"}]});}}
           title={'Sign Out'}
           chevron
