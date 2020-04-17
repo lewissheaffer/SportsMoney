@@ -47,10 +47,10 @@ export default class Inbox extends React.Component {
     this.fetchMessages();
   }
 
-  sendResponse(senderUsername, accepted) {
+  sendResponse(type, senderUsername, accepted) {
     SecureStore.getItemAsync('key').then((ukey) => {
       try{
-        let response = fetch('https://sportsmoneynodejs.appspot.com/handle_friend_request', {
+        let response = fetch('https://sportsmoneynodejs.appspot.com/handle_invite_request', {
           method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -59,7 +59,7 @@ export default class Inbox extends React.Component {
             body: JSON.stringify({
               ukey: ukey,
               accepted: accepted,
-              type: 'friend',
+              type: type,
               senderUsername: senderUsername
             }),
         })
@@ -81,13 +81,19 @@ export default class Inbox extends React.Component {
           this.state.list.map((l, i) => (
           //onPress={() => {this.sendResponse(l.username, true)}}
             <ListItem key={i}  subtitle={
-               l.type=='friend' && <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                <Text style = {{fontSize: 17,}}>{'Friend Request From: ' + l.username}</Text>
+               <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+               {
+                 (l.type =='friend') && <Text style = {{fontSize: 17,}}>{'Friend Request From: ' + l.sender}</Text>
+               }
+               {
+                   (l.type =='group') && <Text style = {{fontSize: 17,}}>{'Invite to join: ' + l.sender}</Text>
+
+               }
                  <View style = {{flexDirection:'row', alignSelf: "flex-end"}}>
-                   <TouchableOpacity onPress = {() => {this.sendResponse(l.username, true)}}>
+                   <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, true)}}>
                       <Ionicons name={'md-checkmark-circle'} color = 'green' size={35} style={{marginRight:20, }}/>
                    </TouchableOpacity>
-                   <TouchableOpacity onPress = {() => {this.sendResponse(l.username, false)}}>
+                   <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, false)}}>
                       <Ionicons name={'md-close-circle'} Title="Deny" color = 'red' size={35} style={{marginRight:10, }} />
                    </TouchableOpacity>
                 </View>

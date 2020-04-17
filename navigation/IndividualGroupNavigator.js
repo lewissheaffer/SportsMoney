@@ -24,3 +24,29 @@ export default class IndividualGroupNavigator extends React.Component {
   );
   }
 }
+
+export function GroupMemberInvite(username, group_id) {
+  SecureStore.getItemAsync('key').then((ukey) => {
+    try{
+      let response = fetch('https://sportsmoneynodejs.appspot.com/add_group_member', {
+        method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ukey: ukey,
+            username: username,
+          }),
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        if(json.already_member){
+          alert('This user is already a member');
+        }
+      });
+    }catch(err){
+      console.log(err);
+    }
+  });
+}
