@@ -84,10 +84,10 @@ export default class Inbox extends React.Component {
             <ListItem key={i}  subtitle={
                <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                {
-                 (l.type =='friend') && <Text style = {{fontSize: 17,}}>{'Friend Request From: ' + l.sender}</Text>
+                 (l.type =='friend') && <Text style = {{fontSize: 17,}}>{'Friend Request from: ' + l.username}</Text>
                }
                {
-                   (l.type =='group') && <Text style = {{fontSize: 17,}}>{'Invite to join: ' + l.sender}</Text>
+                   (l.type =='group') && <Text style = {{fontSize: 17,}}>{'Group Invite from: ' + l.username}</Text>
 
                }
                  <View style = {{flexDirection:'row', alignSelf: "flex-end"}}>

@@ -55,7 +55,7 @@ export default class Groups extends React.Component {
             this.props.navigation.navigate("IndividualGroup", {
               groupName: l.name,
               groupSport: l.sport,
-              group_id: l.id,
+              group_id: l.group_id,
             })
           }} subtitle={l.sport} bottomDivider={true}/>))
       }

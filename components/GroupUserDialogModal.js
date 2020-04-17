@@ -3,7 +3,6 @@ import { useState} from 'react';
 import {View, Picker, TextInput, Platform, StyleSheet} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Overlay, Text, Button, Input } from 'react-native-elements';
-import {GroupMemberInvite} from '../navigation/IndividualGroupNavigator'
 
 export default class GroupUserDialogModal extends React.Component {
   constructor(props) {
@@ -44,7 +43,7 @@ export default class GroupUserDialogModal extends React.Component {
           <View style = {{flexDirection:'row-reverse', alignSelf: "flex-end"}}>
             <View style={{width: 80}}>
               <Button title = {"Submit"} type = {'clear'} disabled={!this.state.exists} onPress = {() => {
-                GroupMemberInvite({this.props.group_id}); this.props.onClose(); this.setState({exists: false});
+                this.props.onSubmit(this.state.username); this.setState({exists: false});
               }}/>
             </View>
             <View style={{width: 80}}>

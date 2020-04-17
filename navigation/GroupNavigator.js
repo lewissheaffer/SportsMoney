@@ -7,7 +7,6 @@ import Groups from '../screens/Groups';
 import IndividualGroupNavigator from './IndividualGroupNavigator';
 import { Ionicons } from '@expo/vector-icons';
 import {createGroup} from '../screens/Groups'
-import GroupUserDialogModal from "../components/GroupUserDialogModal";
 
 const Stack = createStackNavigator();
 export default class GroupNavigator extends Component{
@@ -23,7 +22,6 @@ export default class GroupNavigator extends Component{
       return(
         <React.Fragment>
           <GroupDialogModal isVisible = {this.state.modal} onClose = {() => {this.setState({modal:false})}} onSubmit = {(groupName,league) => {this.setState({modal:false}); createGroup(groupName,league)}}/>
-          <GroupUserDialogModal isVisible = {this.state.inviteModalVisible} onClose = {() => {this.setState({inviteModalVisible:false})}}/>
           <View style={{flex:1, backgroundColor:'white'}}>
             {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
               <Stack.Navigator initialRouteName = 'Groups'>
