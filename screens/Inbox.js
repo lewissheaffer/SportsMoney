@@ -75,6 +75,33 @@ export default class Inbox extends React.Component {
     });
   }
 
+  sendMessageResponse(type, senderUsername, group_id) {
+    SecureStore.getItemAsync('key').then((ukey) => {
+      try{
+        let response = fetch('https://sportsmoneynodejs.appspot.com/handle_message_response', {
+          method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              ukey: ukey,
+              type: type,
+              senderUsername: senderUsername,
+              group_id: group_id,
+            }),
+        })
+        .then((response) => response.json())
+        .then((json) => {
+          this.refreshList();
+
+        });
+      }catch(err){
+        console.log(err);
+      }
+    });
+  }
+
   render() {
     return (
       <ScrollView refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
@@ -85,11 +112,6 @@ export default class Inbox extends React.Component {
                <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                {
                  (l.type =='friend') && <Text style = {{fontSize: 17,}}>{'Friend Request from: ' + l.username}</Text>
-               }
-               {
-                   (l.type =='group') && <Text style = {{fontSize: 17,}}>{'Group Invite from: ' + l.username}</Text>
-
-               }
                  <View style = {{flexDirection:'row', alignSelf: "flex-end"}}>
                    <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, true)}}>
                       <Ionicons name={'md-checkmark-circle'} color = 'green' size={35} style={{marginRight:20, }}/>
@@ -99,6 +121,29 @@ export default class Inbox extends React.Component {
                    </TouchableOpacity>
                 </View>
               </View>
+               }
+               {
+                   (l.type =='group') && <Text style = {{fontSize: 17,}}>{'Group Invite from: ' + l.username}</Text>
+                   <View style = {{flexDirection:'row', alignSelf: "flex-end"}}>
+                     <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, true)}}>
+                        <Ionicons name={'md-checkmark-circle'} color = 'green' size={35} style={{marginRight:20, }}/>
+                     </TouchableOpacity>
+                     <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, false)}}>
+                        <Ionicons name={'md-close-circle'} Title="Deny" color = 'red' size={35} style={{marginRight:10, }} />
+                     </TouchableOpacity>
+                  </View>
+                </View>
+
+               }
+               {
+                 (l.type == 'message')
+                 <View style = {{flexDirection:'row', alignSelf: "flex-end"}}>
+                   <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id)}}>
+                      <Ionicons name={'md-close-circle'} Title="Delete" color = 'red' size={35} style={{marginRight:10, }} />
+                   </TouchableOpacity>
+                </View>
+              </View>
+               }
             }
             bottomDivider
             />
