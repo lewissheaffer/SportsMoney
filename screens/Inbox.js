@@ -108,42 +108,43 @@ export default class Inbox extends React.Component {
         {
           this.state.list.map((l, i) => (
           //onPress={() => {this.sendResponse(l.username, true)}}
+          //
             <ListItem key={i}  subtitle={
-               <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+              <React.Fragment>
                {
-                 (l.type =='friend') && <Text style = {{fontSize: 17,}}>{'Friend Request from: ' + l.username}</Text>
-                 <View style = {{flexDirection:'row', alignSelf: "flex-end"}}>
-                   <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, true)}}>
-                      <Ionicons name={'md-checkmark-circle'} color = 'green' size={35} style={{marginRight:20, }}/>
-                   </TouchableOpacity>
-                   <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, false)}}>
-                      <Ionicons name={'md-close-circle'} Title="Deny" color = 'red' size={35} style={{marginRight:10, }} />
-                   </TouchableOpacity>
-                </View>
-              </View>
-               }
-               {
-                   (l.type =='group') && <Text style = {{fontSize: 17,}}>{'Group Invite from: ' + l.username}</Text>
-                   <View style = {{flexDirection:'row', alignSelf: "flex-end"}}>
+                 (l.type =='friend') && <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                   <Text style = {{fontSize: 17,}}>{'Friend Request from: ' + l.username}</Text>
+                   <View style = {{flexDirection:'row', justifyContent:'flex-end'}}>
                      <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, true)}}>
                         <Ionicons name={'md-checkmark-circle'} color = 'green' size={35} style={{marginRight:20, }}/>
                      </TouchableOpacity>
                      <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, false)}}>
                         <Ionicons name={'md-close-circle'} Title="Deny" color = 'red' size={35} style={{marginRight:10, }} />
                      </TouchableOpacity>
+                    </View>
                   </View>
-                </View>
-
                }
                {
-                 (l.type == 'message')
-                 <View style = {{flexDirection:'row', alignSelf: "flex-end"}}>
+                   (l.type =='group') && <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                     <Text style = {{fontSize: 17,}}>{'Group Invite from: ' + l.username}</Text>
+                    <View style = {{flexDirection:'row', justifyContent:'flex-end'}}>
+                       <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, true)}}>
+                          <Ionicons name={'md-checkmark-circle'} color = 'green' size={35} style={{marginRight:20, }}/>
+                       </TouchableOpacity>
+                       <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, false)}}>
+                          <Ionicons name={'md-close-circle'} Title="Deny" color = 'red' size={35} style={{marginRight:10, }} />
+                       </TouchableOpacity>
+                    </View>
+                  </View>
+               }
+               {
+                 (l.type == 'message') && <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                    <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id)}}>
                       <Ionicons name={'md-close-circle'} Title="Delete" color = 'red' size={35} style={{marginRight:10, }} />
-                   </TouchableOpacity>
+                   </TouchableOpacity>   
                 </View>
-              </View>
                }
+               </React.Fragment>
             }
             bottomDivider
             />
