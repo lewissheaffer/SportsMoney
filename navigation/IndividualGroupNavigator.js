@@ -22,7 +22,7 @@ export default class IndividualGroupNavigator extends React.Component {
       <Text style={{marginRight:20, }} onPress = {() => {this.setState({inviteModalVisible:true})}}>Invite User</Text>)});
   }
 
-  GroupMemberInvite(username, group_id) {
+  GroupMemberInvite(username) {
     SecureStore.getItemAsync('key').then((ukey) => {
       try{
         console.log(group_id);
@@ -35,7 +35,7 @@ export default class IndividualGroupNavigator extends React.Component {
             body: JSON.stringify({
               ukey: ukey,
               username: username,
-              group_id: group_id,
+              group_id: this.props.route.params.group_id,
             }),
         })
         .then((response) => response.json())
@@ -53,7 +53,7 @@ export default class IndividualGroupNavigator extends React.Component {
   render(){
   return (
     <React.Fragment>
-      <GroupUserDialogModal onSubmit = {(username) => {this.GroupMemberInvite(username, this.props.route.params.group_id); this.setState({inviteModalVisible:false});} } isVisible = {this.state.inviteModalVisible} onClose = {() => {this.setState({inviteModalVisible:false})}}/>
+      <GroupUserDialogModal onSubmit = {(username) => {this.GroupMemberInvite(username); this.setState({inviteModalVisible:false});} } isVisible = {this.state.inviteModalVisible} onClose = {() => {this.setState({inviteModalVisible:false})}}/>
       <Tab.Navigator>
         <Tab.Screen name="Games" component={GroupGames} initialParams={{ groupSport: this.props.route.params.groupSport }}/>
         <Tab.Screen name="Rankings" component={GroupRankings}/>

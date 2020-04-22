@@ -63,25 +63,7 @@ export default class FriendDialogModal extends React.Component {
 
   render(){
     return (
-      <Overlay isVisible={this.props.isVisible} height = {500}  onBackdropPress = {() => {this.props.onClose()}}>
-      <View style={{flex:1,}}>
-        <Text style = {{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}}>Send Message to friend</Text>
-        <Input style = {styles.input_container} onChangeText = {(text) => {this.setState({FriendsUsername:text}); this.checkUserFromFriends(text)}} placeholder = "Friend's username" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.Friendexists ? '' : 'User does not exist.'} />
-          <Input style = {styles.input_container} onChangeText = {(text) => {this.setState({subject:text})}} placeholder = "Enter subject" underlineColorAndroid='transparent' maxlength="30" />
-            <Input style = {styles.input_container} onChangeText = {(text) => {this.setState({message:text})}} placeholder = "Enter Message" underlineColorAndroid='transparent' maxlength="150" />
-        <View style = {{flexDirection:'row-reverse', alignSelf: "flex-end"}}>
-          <View style={{width: 80}}>
-            <Button title = {"Submit"} type = {'clear'} disabled={!this.state.Friendexists} onPress = {() => {
-              Sendmessage(this.state.FriendsUsername,this.state.subject,this.state.message); this.props.onClose(); this.setState({Friendexists: false});
-            }}/>
-          </View>
-          <View style={{width: 80}}>
-            <Button title = {"Cancel"} type = {'clear'} onPress = {() => this.props.onClose()}/>
-          </View>
-        </View>
-      </View>
-
-
+      <Overlay isVisible={this.props.isVisible} height = {175}  onBackdropPress = {() => {this.props.onClose()}}>
         <View style={{flex:1,}}>
           <Text style = {{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}}>Add a Friend</Text>
           <Input style = {styles.input_container} onChangeText = {(text) => {this.setState({username:text}); this.checkUser(text)}} placeholder = "Friend's username" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.exists ? '' : 'User does not exist.'} />

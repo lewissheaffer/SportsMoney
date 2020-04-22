@@ -5,14 +5,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { Overlay, Text, Button, Input } from 'react-native-elements';
 import {sendMessage} from '../screens/Inbox';
 
-export default class InboxDialogModal extends React.Component {
+export default class FriendMessageDialogModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
       subject: '',
       message: '',
-      exists: false
     }
   }
 
@@ -39,16 +37,14 @@ export default class InboxDialogModal extends React.Component {
 
   render(){
     return (
-      <Overlay isVisible={this.props.isVisible} height = {315}  onBackdropPress = {() => {this.props.onClose()}}>
+      <Overlay isVisible={this.props.isVisible} height = {165}  onBackdropPress = {() => {this.props.onClose()}}>
         <View style={{flex:1,}}>
           <Text style = {{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}}>Send a message</Text>
-          <Input style = {styles.input_container} onChangeText = {(text) => {this.setState({username:text}); this.checkUser(text)}} placeholder = "Friend's username" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.exists ? '' : 'User does not exist.'} />
-          <Input style = {styles.input_container} onChangeText = {(text) => this.setState({subject:text})} placeholder = "Subject" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.subject ? '' : 'Subject cannot be blank.'} />
           <Input style = {styles.input_container} onChangeText = {(text) => this.setState({message:text})} placeholder = "Message" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.message ? '' : 'Message cannot be blank.'} />
           <View style = {{flexDirection:'row-reverse', alignSelf: "flex-end"}}>
             <View style={{width: 80}}>
-              <Button title = {"Submit"} type = {'clear'} disabled={!this.state.exists || !this.state.subject || !this.state.message} onPress = {() => {
-                sendMessage(this.state.username, this.state.subject, this.state.message); this.props.onClose(); this.setState({exists: false, subject: '', message: ''});
+              <Button title = {"Submit"} type = {'clear'} disabled={!this.state.message} onPress = {() => {
+                this.props.onSubmit(this.state.message); this.setState({message: ''});
               }}/>
             </View>
             <View style={{width: 80}}>

@@ -75,33 +75,6 @@ export default class Inbox extends React.Component {
     });
   }
 
-  sendMessageResponse(type, senderUsername, group_id) {
-    SecureStore.getItemAsync('key').then((ukey) => {
-      try{
-        let response = fetch('https://sportsmoneynodejs.appspot.com/handle_message_response', {
-          method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              ukey: ukey,
-              type: type,
-              senderUsername: senderUsername,
-              group_id: group_id,
-            }),
-        })
-        .then((response) => response.json())
-        .then((json) => {
-          this.refreshList();
-
-        });
-      }catch(err){
-        console.log(err);
-      }
-    });
-  }
-
   render() {
     return (
       <ScrollView refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
@@ -139,9 +112,9 @@ export default class Inbox extends React.Component {
                }
                {
                  (l.type == 'message') && <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                   <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id)}}>
+                   <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, false)}}>
                       <Ionicons name={'md-close-circle'} Title="Delete" color = 'red' size={35} style={{marginRight:10, }} />
-                   </TouchableOpacity>   
+                   </TouchableOpacity>
                 </View>
                }
                </React.Fragment>
