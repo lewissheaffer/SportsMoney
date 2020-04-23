@@ -14,7 +14,7 @@ export default class Profile extends React.Component {
 
       numFriends: -1,
       numGroups: -1,
-      numPoints: -1,
+      numPoints: 0,
       username: "Profile Name",
       firstName: "First Name",
       lastName:"Last Name",
@@ -132,6 +132,10 @@ fetchNumPoints() {
 refreshList() {
   this.setState({refreshing: true});
   this.fetchProfile();
+<<<<<<< HEAD
+=======
+
+>>>>>>> 671f713905d53071e23c8a0697e25c8e1e74bcf4
 }
 
 fetchBio() {
@@ -150,7 +154,7 @@ fetchBio() {
       .then((response) => response.json())
       .then((json) => {
         console.log(json);
-        if(json.result){
+        if(json.result == 'success'){
           this.setState({bio:json.bio})
         }
         else {
@@ -164,6 +168,10 @@ fetchBio() {
 }
 
 submitBioChange() {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 671f713905d53071e23c8a0697e25c8e1e74bcf4
   console.log("In submitBioChange");
   SecureStore.getItemAsync('key').then((ukey) => {
     try{
@@ -245,7 +253,11 @@ submitBioChange() {
             height="auto"
             onBackdropPress={() => this.setState({editingBio:false})}
           >
+<<<<<<< HEAD
             <React.Fragment>
+=======
+            <View>
+>>>>>>> 671f713905d53071e23c8a0697e25c8e1e74bcf4
               <Text style={styles.margin10}>
                 Edit Bio
               </Text>
@@ -269,7 +281,11 @@ submitBioChange() {
                  }}
               >
               </Button>
+<<<<<<< HEAD
             </React.Fragment>
+=======
+            </View>
+>>>>>>> 671f713905d53071e23c8a0697e25c8e1e74bcf4
           </Overlay>
 
           <ListItem

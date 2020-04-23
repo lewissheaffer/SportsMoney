@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {View, Button, ScrollView, RefreshControl} from 'react-native';
-import { Text } from 'react-native-elements';
+import { ListItem, Text } from 'react-native-elements';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 export default class GroupRankings extends React.Component {
@@ -12,12 +12,47 @@ export default class GroupRankings extends React.Component {
     }
   }
 
+  componentDidMount(){
+    this.fetchRankings();
+    this.state.rankingsList.sort(this.compare);
+  }
+
+  compare(x, y){
+    if(x.points < y.points){
+      return -1;
+    }
+    if(x.points > y.points){
+      return 1;
+    }
+    return 0;
+  }
+
+  fetchRankings() {
+    try {
+      let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_rankings', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          group_id: this.props.route.params.group_id
+        })
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({rankingsList: json});
+        this.setState({refreshing: false});
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   refreshList() {
     this.setState({refreshing: true});
-    //Include call to fetch values to refresh
-    //Turn off refreshing after the list has been set
-    //Copy the line below into that method
-    this.setState({refreshing:false});
+    this.fetchRankings();
+    this.state.rankingsList.sort(this.compare);
   }
 
   render(){
@@ -25,7 +60,7 @@ export default class GroupRankings extends React.Component {
       <ScrollView refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
         {
           this.state.rankingsList.map((l, i) => (
-            <ListItem key={i} title={l.name} subtitle={l.sport} bottomDivider/>
+            <ListItem key={i} title={`${l.first_name} ${l.last_name}: ${l.points} pts`} subtitle={l.username} bottomDivider/>
           ))
         }
       </ScrollView>
