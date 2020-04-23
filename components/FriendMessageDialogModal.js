@@ -14,37 +14,17 @@ export default class FriendMessageDialogModal extends React.Component {
     }
   }
 
-  checkUser = (username) => {
-    try{
-      let response = fetch('https://sportsmoneynodejs.appspot.com/check_user', {
-        method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: username,
-          }),
-      })
-      .then((response) => response.json())
-      .then((json) => {
-        this.setState({exists: json.exists});
-      });
-    }catch(err){
-      console.log(err);
-    }
-  }
-
   render(){
     return (
-      <Overlay isVisible={this.props.isVisible} height = {165}  onBackdropPress = {() => {this.props.onClose()}}>
+      <Overlay isVisible={this.props.isVisible} height = {235}  onBackdropPress = {() => {this.props.onClose()}}>
         <View style={{flex:1,}}>
-          <Text style = {{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}}>Send a message</Text>
+        <Text style = {{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}}>Send a message</Text>
+        <Input style = {styles.input_container} onChangeText = {(text) => this.setState({subject:text})} placeholder = "Subject" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.subject ? '' : 'Subject cannot be blank.'} />
           <Input style = {styles.input_container} onChangeText = {(text) => this.setState({message:text})} placeholder = "Message" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.message ? '' : 'Message cannot be blank.'} />
           <View style = {{flexDirection:'row-reverse', alignSelf: "flex-end"}}>
             <View style={{width: 80}}>
-              <Button title = {"Submit"} type = {'clear'} disabled={!this.state.message} onPress = {() => {
-                this.props.onSubmit(this.state.message); this.setState({message: ''});
+              <Button title = {"Submit"} type = {'clear'} disabled={!this.state.message || !this.state.subject} onPress = {() => {
+                this.props.onSubmit(this.state.subject, this.state.message); this.setState({message: '', subject: ''});
               }}/>
             </View>
             <View style={{width: 80}}>

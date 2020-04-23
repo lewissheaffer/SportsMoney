@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Text } from 'react-native-elements';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import FriendMessageDialogModal from '../components/FriendMessageDialogModal';
-
+import * as SecureStore from 'expo-secure-store';
 
 
 export default class IndividualFriend extends React.Component {
@@ -19,10 +19,9 @@ export default class IndividualFriend extends React.Component {
     )})
   }
 
-  sendMessage(username, message) {
+  sendMessage(username, subject, message) {
     SecureStore.getItemAsync('key').then((ukey) => {
       try{
-        console.log(group_id);
         let response = fetch('https://sportsmoneynodejs.appspot.com/send_friend_message', {
           method: 'POST',
             headers: {
@@ -32,14 +31,13 @@ export default class IndividualFriend extends React.Component {
             body: JSON.stringify({
               ukey: ukey,
               username: username,
-              message:message,
+              subject:subject,
+              contents:message,
             }),
         })
         .then((response) => response.json())
         .then((json) => {
-          if(json.already_member){
-            alert('This user is already a member');
-          }
+
         });
       }catch(err){
         console.log(err);
@@ -50,7 +48,7 @@ export default class IndividualFriend extends React.Component {
     render(){
       return (
         <React.Fragment>
-          <FriendMessageDialogModal isVisible = {this.state.messageModal} onClose = {() => {this.setState({messageModal:false})}} onSubmit = {(message) => {this.setState({modal:false}); sendMessage(this.props.route.params.username, message)}}/>
+          <FriendMessageDialogModal isVisible = {this.state.messageModal} onClose = {() => {this.setState({messageModal:false})}} onSubmit = {(subject, message) => {this.setState({messageModal:false}); this.sendMessage(this.props.route.params.username, subject, message)}}/>
           <Text>
               Hello, this is individual friend page...
           </Text>

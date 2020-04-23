@@ -25,7 +25,6 @@ export default class IndividualGroupNavigator extends React.Component {
   GroupMemberInvite(username) {
     SecureStore.getItemAsync('key').then((ukey) => {
       try{
-        console.log(group_id);
         let response = fetch('https://sportsmoneynodejs.appspot.com/add_group_member', {
           method: 'POST',
             headers: {
