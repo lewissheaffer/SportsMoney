@@ -54,7 +54,7 @@ export default class IndividualGroupNavigator extends React.Component {
     <React.Fragment>
       <GroupUserDialogModal onSubmit = {(username) => {this.GroupMemberInvite(username); this.setState({inviteModalVisible:false});} } isVisible = {this.state.inviteModalVisible} onClose = {() => {this.setState({inviteModalVisible:false})}}/>
       <Tab.Navigator>
-        <Tab.Screen name="Games" component={GroupGames} initialParams={{ groupSport: this.props.route.params.groupSport }}/>
+        <Tab.Screen name="Games" component={GroupGames} initialParams={{ groupSport: this.props.route.params.groupSport, group_id: this.props.route.params.group_id}}/>
         <Tab.Screen name="Rankings" component={GroupRankings} initialParams={{group_id: this.props.route.params.group_id}}/>
       </Tab.Navigator>
     </React.Fragment>
