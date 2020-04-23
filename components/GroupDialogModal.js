@@ -40,20 +40,8 @@ export default class GroupDialogModal extends React.Component {
   }
   render(){
     return (
-      <Overlay isVisible={this.props.isVisible} height = {350}  onBackdropPress = {() => {this.props.onClose()}}>
+      <Overlay isVisible={this.props.isVisible} height = {225}  onBackdropPress = {() => {this.props.onClose()}}>
         <View style={{flex:1,}}>
-          <Text style = {{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}}>Enter Group id</Text>
-          <Input style = {styles.input_container} onChangeText = {(text) => {this.setState({g_id:text}); this.checkGroup(text)}} placeholder = "Group id" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.exists ? '' : 'Group does not exist.'} />
-          <View style = {{flexDirection:'row-reverse', alignSelf: "flex-end"}}>
-            <View style={{width: 80}}>
-              <Button title = {"Submit"} type = {'clear'} disabled={!this.state.exists} onPress = {() => {
-                addGroup(this.state.g_id,this.state.Findgroupname,this.state.sport); this.props.onClose(); this.setState({exists: false});
-              }}/>
-            </View>
-            <View style={{width: 80}}>
-              <Button title = {"Cancel"} type = {'clear'} onPress = {() => this.props.onClose()}/>
-            </View>
-          </View>
           <Text style = {{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}}>Create a Group</Text>
           <TextInput style = {styles.input_container} onChangeText = {(text) => {this.setState({groupName:text})}} placeholder = "Group Name" underlineColorAndroid='transparent' />
           <Text  style = {{marginTop: 15, marginBottom: 0,}}>Select League</Text>

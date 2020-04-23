@@ -4,13 +4,18 @@ import {View, Picker, TextInput, Platform, StyleSheet} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Overlay, Text, Button, Input } from 'react-native-elements';
 import {addFriend} from '../screens/Friends';
+import {sendmessage} from '../screens/Inbox';
 
 export default class FriendDialogModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       username: '',
-      exists: false
+      exists: false,
+      FriendsUsername:'',
+      Friendexists: false,
+      Message:'',
+      subject:'',
     }
   }
 
@@ -35,9 +40,30 @@ export default class FriendDialogModal extends React.Component {
     }
   }
 
+  checkUserFromFriends = (FriendsUsername) => {
+    try{
+      let response = fetch('https://sportsmoneynodejs.appspot.com/check_user_from_friends', {
+        method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            FriendsUsername: FriendsUsername,
+          }),
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({Friendexists: json.exists});
+      });
+    }catch(err){
+      console.log(err);
+    }
+  }
+
   render(){
     return (
-      <Overlay isVisible={this.props.isVisible} height = {200}  onBackdropPress = {() => {this.props.onClose()}}>
+      <Overlay isVisible={this.props.isVisible} height = {175}  onBackdropPress = {() => {this.props.onClose()}}>
         <View style={{flex:1,}}>
           <Text style = {{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}}>Add a Friend</Text>
           <Input style = {styles.input_container} onChangeText = {(text) => {this.setState({username:text}); this.checkUser(text)}} placeholder = "Friend's username" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.exists ? '' : 'User does not exist.'} />

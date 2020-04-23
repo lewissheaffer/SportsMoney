@@ -4,6 +4,7 @@ import {View, Button, ScrollView, RefreshControl, Alert, TouchableOpacity} from 
 import {useState} from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { Ionicons } from '@expo/vector-icons';
+import MessageModal from "../components/MessageModal";
 
 export default class Inbox extends React.Component {
   constructor(props) {
@@ -11,6 +12,9 @@ export default class Inbox extends React.Component {
     this.state = {
       list: [],
       refreshing: false,
+      modalVisible: false,
+      subject: '',
+      message:'',
     }
   }
 
@@ -47,7 +51,7 @@ export default class Inbox extends React.Component {
     this.fetchMessages();
   }
 
-  sendResponse(type, senderUsername, group_id, accepted) {
+  sendResponse(type, senderUsername, group_id, accepted, subject) {
     SecureStore.getItemAsync('key').then((ukey) => {
       try{
         let response = fetch('https://sportsmoneynodejs.appspot.com/handle_invite_request', {
@@ -62,6 +66,7 @@ export default class Inbox extends React.Component {
               type: type,
               senderUsername: senderUsername,
               group_id: group_id,
+              subject: subject,
             }),
         })
         .then((response) => response.json())
@@ -77,34 +82,56 @@ export default class Inbox extends React.Component {
 
   render() {
     return (
-      <ScrollView refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
-        {
-          this.state.list.map((l, i) => (
-          //onPress={() => {this.sendResponse(l.username, true)}}
-            <ListItem key={i}  subtitle={
-               <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-               {
-                 (l.type =='friend') && <Text style = {{fontSize: 17,}}>{'Friend Request from: ' + l.username}</Text>
-               }
-               {
-                   (l.type =='group') && <Text style = {{fontSize: 17,}}>{'Group Invite from: ' + l.username}</Text>
-
-               }
-                 <View style = {{flexDirection:'row', alignSelf: "flex-end"}}>
-                   <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, true)}}>
-                      <Ionicons name={'md-checkmark-circle'} color = 'green' size={35} style={{marginRight:20, }}/>
-                   </TouchableOpacity>
-                   <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, false)}}>
-                      <Ionicons name={'md-close-circle'} Title="Deny" color = 'red' size={35} style={{marginRight:10, }} />
-                   </TouchableOpacity>
-                </View>
-              </View>
-            }
-            bottomDivider
-            />
-          ))
-        }
-      </ScrollView>
+      <React.Fragment>
+        <MessageModal isVisible = {this.state.modalVisible} subject={this.state.subject} message={this.state.message} onClose = {() => {this.setState({modalVisible:false})}}/>
+        <ScrollView refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
+          {
+            this.state.list.map((l, i) => (
+              <ListItem key={i}  onPress = {() => {if (l.type == "message") {this.setState({subject:l.subject, message:l.contents, modalVisible:true});}}} subtitle={
+                <React.Fragment>
+                 {
+                   (l.type =='friend') && <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                     <Text style = {{fontSize: 17,}}>{'Friend Request from: ' + l.username}</Text>
+                     <View style = {{flexDirection:'row', justifyContent:'flex-end'}}>
+                       <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, true)}}>
+                          <Ionicons name={'md-checkmark-circle'} color = 'green' size={35} style={{marginRight:20, }}/>
+                       </TouchableOpacity>
+                       <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, false)}}>
+                          <Ionicons name={'md-close-circle'} Title="Deny" color = 'red' size={35} style={{marginRight:10, }} />
+                       </TouchableOpacity>
+                      </View>
+                    </View>
+                 }
+                 {
+                     (l.type =='group') && <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                       <Text style = {{fontSize: 17,}}>{'Group Invite from: ' + l.username}</Text>
+                      <View style = {{flexDirection:'row', justifyContent:'flex-end'}}>
+                         <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, true, l.subject)}}>
+                            <Ionicons name={'md-checkmark-circle'} color = 'green' size={35} style={{marginRight:20, }}/>
+                         </TouchableOpacity>
+                         <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, false, l.subject)}}>
+                            <Ionicons name={'md-close-circle'} Title="Deny" color = 'red' size={35} style={{marginRight:10, }} />
+                         </TouchableOpacity>
+                      </View>
+                    </View>
+                 }
+                 {
+                   (l.type == 'message') && <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                     <Text style = {{fontSize: 17,}}>{'Message from: ' + l.username}</Text>
+                     <Text style = {{fontSize: 17,}}>{"Click to View"}</Text>
+                     <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, false, l.subject)}}>
+                        <Ionicons name={'md-close-circle'} Title="Delete" color = 'red' size={35} style={{marginRight:10, }} />
+                     </TouchableOpacity>
+                  </View>
+                 }
+                 </React.Fragment>
+              }
+              bottomDivider
+              />
+            ))
+          }
+        </ScrollView>
+      </React.Fragment>
     );
   }
 }

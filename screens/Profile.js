@@ -11,10 +11,10 @@ export default class Profile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      
+
       numFriends: -1,
       numGroups: -1,
-      numPoints: -1,
+      numPoints: 0,
       username: "Profile Name",
       firstName: "First Name",
       lastName:"Last Name",
@@ -125,21 +125,13 @@ fetchNumGroups() {
 
 }
 
-
-
 fetchNumPoints() {
-
-
 //TODO , no points rn
-
-
-
 }
 
 refreshList() {
   this.setState({refreshing: true});
   this.fetchProfile();
-  
 }
 
 fetchBio() {
@@ -158,7 +150,7 @@ fetchBio() {
       .then((response) => response.json())
       .then((json) => {
         console.log(json);
-        if(json.result){
+        if(json.result == 'success'){
           this.setState({bio:json.bio})
         }
         else {
@@ -172,7 +164,6 @@ fetchBio() {
 }
 
 submitBioChange() {
-  
   console.log("In submitBioChange");
   SecureStore.getItemAsync('key').then((ukey) => {
     try{
@@ -201,8 +192,6 @@ submitBioChange() {
       console.log(err);
     }
   });
-
-
 }
 
   render() {
@@ -256,31 +245,31 @@ submitBioChange() {
             height="auto"
             onBackdropPress={() => this.setState({editingBio:false})}
           >
-            <Text style={styles.margin10}>
-              Edit Bio
-            </Text>
-            <Input
-              placeholder='New Bio'
-              value = {this.state.bio}
-              onChangeText={(bio) => this.setState({bio})}
-            />
-            <Button
-            title="Cancel"
-            color="blue"
-            onPress={() => {
-              this.setState({editingBio:false})
-            }}></Button>
-            <Button
-             title="Confirm"
-             color="blue"
-             onPress={() => {
-               this.setState({editingBio:false})
-               this.submitBioChange()
-               }}
-            >
-            </Button>
-            
-
+            <React.Fragment>
+              <Text style={styles.margin10}>
+                Edit Bio
+              </Text>
+              <Input
+                placeholder='New Bio'
+                value = {this.state.bio}
+                onChangeText={(bio) => this.setState({bio})}
+              />
+              <Button
+              title="Cancel"
+              color="blue"
+              onPress={() => {
+                this.setState({editingBio:false})
+              }}></Button>
+              <Button
+               title="Confirm"
+               color="blue"
+               onPress={() => {
+                 this.setState({editingBio:false})
+                 this.submitBioChange()
+                 }}
+              >
+              </Button>
+            </React.Fragment>
           </Overlay>
 
           <ListItem
