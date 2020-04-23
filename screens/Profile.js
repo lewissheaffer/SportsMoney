@@ -57,7 +57,7 @@ fetchName() {
       })
       .then((response) => response.json())
       .then((json) => {
-        console.log(json);
+      //  console.log(json);
         this.setState({firstName:json.first_name});
         this.setState({lastName:json.last_name});
         this.setState({username:json.username});
@@ -189,7 +189,7 @@ submitBioChange() {
       })
       .then((response) => response.json())
       .then((json) => {
-        console.log(json);
+       // console.log(json);
         if(json.result){
           console.log("Success, editiing bio!!!");
         }
