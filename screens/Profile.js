@@ -37,13 +37,13 @@ fetchProfile() {
  this.fetchNumGroups();
  this.fetchName();
  this.fetchBio();
+ this.fetchNumPoints();
 
 
 }
 
 fetchName() {
   console.log("In fetchName");
-  console.log("ukey = " +this.state.ukey);
   SecureStore.getItemAsync('key').then((ukey) => {
     try{
       let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_user_by_ukey', {
@@ -126,7 +126,32 @@ fetchNumGroups() {
 }
 
 fetchNumPoints() {
-//TODO , no points rn
+  console.log("In fetchNumPoints");
+  SecureStore.getItemAsync('key').then((ukey) => {
+    try{
+      let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_total_points', {
+        method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ukey: ukey
+          }),
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+        let total = 0;
+        for (let index = 0; index < json.length; index++) {
+          total += json[index].points;
+        }
+        this.setState({numPoints:total});
+      });
+    }catch(err){
+      console.log(err);
+    }
+  });
 }
 
 refreshList() {
