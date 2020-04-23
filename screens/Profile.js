@@ -132,10 +132,6 @@ fetchNumPoints() {
 refreshList() {
   this.setState({refreshing: true});
   this.fetchProfile();
-<<<<<<< HEAD
-=======
-
->>>>>>> 671f713905d53071e23c8a0697e25c8e1e74bcf4
 }
 
 fetchBio() {
@@ -168,10 +164,6 @@ fetchBio() {
 }
 
 submitBioChange() {
-<<<<<<< HEAD
-=======
-
->>>>>>> 671f713905d53071e23c8a0697e25c8e1e74bcf4
   console.log("In submitBioChange");
   SecureStore.getItemAsync('key').then((ukey) => {
     try{
@@ -253,11 +245,7 @@ submitBioChange() {
             height="auto"
             onBackdropPress={() => this.setState({editingBio:false})}
           >
-<<<<<<< HEAD
             <React.Fragment>
-=======
-            <View>
->>>>>>> 671f713905d53071e23c8a0697e25c8e1e74bcf4
               <Text style={styles.margin10}>
                 Edit Bio
               </Text>
@@ -281,11 +269,7 @@ submitBioChange() {
                  }}
               >
               </Button>
-<<<<<<< HEAD
             </React.Fragment>
-=======
-            </View>
->>>>>>> 671f713905d53071e23c8a0697e25c8e1e74bcf4
           </Overlay>
 
           <ListItem
