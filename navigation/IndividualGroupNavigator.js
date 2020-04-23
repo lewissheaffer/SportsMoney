@@ -25,7 +25,6 @@ export default class IndividualGroupNavigator extends React.Component {
   GroupMemberInvite(username) {
     SecureStore.getItemAsync('key').then((ukey) => {
       try{
-        console.log(group_id);
         let response = fetch('https://sportsmoneynodejs.appspot.com/add_group_member', {
           method: 'POST',
             headers: {
@@ -56,7 +55,7 @@ export default class IndividualGroupNavigator extends React.Component {
       <GroupUserDialogModal onSubmit = {(username) => {this.GroupMemberInvite(username); this.setState({inviteModalVisible:false});} } isVisible = {this.state.inviteModalVisible} onClose = {() => {this.setState({inviteModalVisible:false})}}/>
       <Tab.Navigator>
         <Tab.Screen name="Games" component={GroupGames} initialParams={{ groupSport: this.props.route.params.groupSport }}/>
-        <Tab.Screen name="Rankings" component={GroupRankings}/>
+        <Tab.Screen name="Rankings" component={GroupRankings} initialParams={{group_id: this.props.route.params.group_id}}/>
       </Tab.Navigator>
     </React.Fragment>
   );

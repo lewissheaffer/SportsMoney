@@ -6,13 +6,10 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "test": "jest"
+    "test": "jest --watchAll"
   },
   "jest": {
-    "testEnvironment": "node",
-    "coveragePathIgnorePatterns": [
-      "/node_modules/"
-    ]
+    "preset": "jest-expo"
   },
   "dependencies": {
     "@expo/vector-icons": "^10.0.6",
