@@ -7,12 +7,14 @@ export default class GroupGames extends React.Component {
     super(props);
     this.state = {
       gamesList: [],
+      resultsList: [],
       refreshing: false
     }
   }
 
   componentDidMount(){
     this.fetchGames();
+    this.fetchResults();
   }
 
   fetchGames() {
@@ -37,9 +39,32 @@ export default class GroupGames extends React.Component {
     }
   }
 
+  fetchResults() {
+    try {
+      let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_results', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          sport: this.props.route.params.groupSport
+        })
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({resultsList: json});
+        this.setState({refreshing: false});
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   refreshList() {
     this.setState({refreshing: true});
     this.fetchGames();
+    this.fetchResults();
     this.setState({refreshing: false});
   }
 
@@ -54,7 +79,8 @@ export default class GroupGames extends React.Component {
       {this.state.gamesList.map((l, i) => (<ListItem key={i} title={l.team1 + ' vs ' + l.team2} bottomDivider={true}/>))}
       {this.state.gamesList.length < 1 && (<View style={{alignItems: 'center', backgroundColor: 'white', paddingVertical: 10}}><Text style={{fontSize: 18}}>No Games Tomorrow!</Text></View>)}
       <View style={{alignItems: 'center', backgroundColor: 'lightgray', marginTop: 15}}><Text>Yesterday's Results</Text></View>
-      <View style={{alignItems: 'center', backgroundColor: 'white', paddingVertical: 10}}><Text style={{fontSize: 18}}>No Previous Games!</Text></View>
+      {this.state.resultsList.map((l, i) => (<ListItem key={i} title={`${l.team1}: ${l.team1_points}   |   ${l.team2}: ${l.team2_points}`} bottomDivider={true}/>))}
+      {this.state.resultsList.length < 1 && (<View style={{alignItems: 'center', backgroundColor: 'white', paddingVertical: 10}}><Text style={{fontSize: 18}}>No Previous Games!</Text></View>)}
     </ScrollView>);
   }
 }
