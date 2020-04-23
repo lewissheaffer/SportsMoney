@@ -6,6 +6,7 @@ import { StyleSheet, RefreshControl,  View, Button } from 'react-native';
 import Colors from '../constants/Colors';
 import { Logs } from 'expo';
 import * as SecureStore from 'expo-secure-store';
+import { clearUpdateCacheExperimentalAsync } from 'expo/build/Updates/Updates';
 
 export default class Profile extends React.Component {
   constructor(props) {
@@ -32,7 +33,6 @@ export default class Profile extends React.Component {
 
 fetchProfile() {
 
-//TODO fetch number of friends, points, and groups
  this.fetchNumFriends();
  this.fetchNumGroups();
  this.fetchName();
@@ -43,6 +43,7 @@ fetchProfile() {
 
 fetchName() {
   console.log("In fetchName");
+  console.log("ukey = " +this.state.ukey);
   SecureStore.getItemAsync('key').then((ukey) => {
     try{
       let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_user_by_ukey', {
@@ -67,7 +68,6 @@ fetchName() {
       console.log("name error: "+err);
     }
   });
-
 
 }
 
@@ -116,7 +116,7 @@ fetchNumGroups() {
       .then((json) => {
         console.log("numGroups = " + json.length);
         this.setState({numGroups: json.length});
-        this.setState({refreshing:false});
+        //this.setState({refreshing:false});
       });
     }catch(err){
       console.log(err);
@@ -151,7 +151,8 @@ fetchBio() {
       .then((json) => {
         console.log(json);
         if(json.result == 'success'){
-          this.setState({bio:json.bio})
+          this.setState({bio:json.bio});
+          this.setState({refreshing:false});
         }
         else {
           alert('Error editing bio');
