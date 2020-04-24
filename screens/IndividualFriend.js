@@ -61,9 +61,6 @@ export default class IndividualFriend extends React.Component {
     });
   }
   fetchNumFriends() {
-    console.log("Start");
-    console.log("ukey: " + this.state.ukey);
-    console.log("In fetchNumFriends");
       try{
         let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_friends', {
           method: 'POST',
@@ -88,8 +85,6 @@ export default class IndividualFriend extends React.Component {
   }
 
   fetchNumGroups() {
-
-    console.log("In fetch Num Groups");
       try{
         let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_groups', {
           method: 'POST',
@@ -110,7 +105,7 @@ export default class IndividualFriend extends React.Component {
       }catch(err){
         console.log(err);
       }
-  
+
   }
 
   fetchName() {
@@ -139,7 +134,6 @@ export default class IndividualFriend extends React.Component {
   }
 
   fetchBio() {
-    console.log("In fetch Bio");
       try{
         let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_bio', {
           method: 'POST',
@@ -240,7 +234,7 @@ export default class IndividualFriend extends React.Component {
       return (
         <React.Fragment>
           <FriendMessageDialogModal isVisible = {this.state.messageModal} onClose = {() => {this.setState({messageModal:false})}} onSubmit = {(subject, message) => {this.setState({messageModal:false}); this.sendMessage(this.props.route.params.username, subject, message)}}/>
-          
+
           <ScrollView  refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>} >
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}>
           <View style={{ flexDirection: 'column' }}>

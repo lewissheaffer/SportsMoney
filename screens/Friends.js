@@ -32,7 +32,6 @@ export default class Friends extends React.Component {
         })
         .then((response) => response.json())
         .then((json) => {
-          console.log(json);
           this.setState({list:json});
           this.setState({refreshing:false});
         });

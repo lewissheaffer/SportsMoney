@@ -12,7 +12,6 @@ export default class Profile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-
       numFriends: -1,
       numGroups: -1,
       numPoints: 0,
@@ -22,8 +21,6 @@ export default class Profile extends React.Component {
       bio: "Biography",
       refreshing: false,
       editingBio: false,
-
-
     }
   }
 
@@ -32,18 +29,13 @@ export default class Profile extends React.Component {
   }
 
 fetchProfile() {
-
  this.fetchNumFriends();
  this.fetchNumGroups();
  this.fetchName();
  this.fetchBio();
- this.fetchNumPoints();
-
-
 }
 
 fetchName() {
-  console.log("In fetchName");
   SecureStore.getItemAsync('key').then((ukey) => {
     try{
       let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_user_by_ukey', {
@@ -68,11 +60,9 @@ fetchName() {
       console.log("name error: "+err);
     }
   });
-
 }
 
 fetchNumFriends() {
-  console.log("In fetchNumFriends");
   SecureStore.getItemAsync('key').then((ukey) => {
     try{
       let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_friends', {
@@ -98,8 +88,6 @@ fetchNumFriends() {
 }
 
 fetchNumGroups() {
-
-  console.log("In fetch Num Groups");
   SecureStore.getItemAsync('key').then((ukey) => {
     try{
       let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_groups', {
@@ -114,7 +102,6 @@ fetchNumGroups() {
       })
       .then((response) => response.json())
       .then((json) => {
-        console.log("numGroups = " + json.length);
         this.setState({numGroups: json.length});
         //this.setState({refreshing:false});
       });
@@ -174,7 +161,6 @@ fetchBio() {
       })
       .then((response) => response.json())
       .then((json) => {
-        console.log(json);
         if(json.result == 'success'){
           this.setState({bio:json.bio});
           this.setState({refreshing:false});
@@ -190,7 +176,6 @@ fetchBio() {
 }
 
 submitBioChange() {
-  console.log("In submitBioChange");
   SecureStore.getItemAsync('key').then((ukey) => {
     try{
       let response = fetch('https://sportsmoneynodejs.appspot.com/edit_bio', {
@@ -208,7 +193,6 @@ submitBioChange() {
       .then((json) => {
        // console.log(json);
         if(json.result){
-          console.log("Success, editiing bio!!!");
         }
         else {
           alert('Error editing bio');
@@ -311,9 +295,6 @@ submitBioChange() {
 
 }
 
-
-
-
 const styles = StyleSheet.create({
     blue: {
         backgroundColor: Colors.tintColor
@@ -330,6 +311,4 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginLeft: 10
     }
-
-
 })
