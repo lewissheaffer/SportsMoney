@@ -192,6 +192,31 @@ export default class IndividualFriend extends React.Component {
       }catch(err){
         console.log(err);
       }
+  }
+
+  deleteFriend() {
+    SecureStore.getItemAsync('key').then((ukey) => {
+      try{
+        let response = fetch('https://sportsmoneynodejs.appspot.com/delete_friend', {
+          method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              ukey1: ukey ,
+              ukey2: this.state.ukey
+            }),
+        })
+        .then((response) => response.json())
+        .then((json) => {
+        });
+      }catch(err){
+        console.log(err);
+      }
+    });
+
+    this.props.navigation.navigate("Friends");
     
   }
 
@@ -208,6 +233,8 @@ export default class IndividualFriend extends React.Component {
     this.fetchProfile();
 
   }
+
+ 
 
     render(){
       return (
@@ -250,6 +277,15 @@ export default class IndividualFriend extends React.Component {
             {this.state.bio}
           </Text>
         </View>
+
+        <ListItem
+            onPress={() => {this.deleteFriend()}}
+            title={"Delete Friend"}
+            chevron
+            topDivider
+            bottomDivider
+          />
+          
          
       </ScrollView>
         </React.Fragment>

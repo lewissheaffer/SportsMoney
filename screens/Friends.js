@@ -14,7 +14,7 @@ export default class Friends extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchFriends();
+    this.refreshList();
   }
 
   fetchFriends() {
@@ -51,6 +51,7 @@ export default class Friends extends React.Component {
     return (
       <ScrollView refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
         {
+          
           this.state.list.map((l, i) => (
             <ListItem key={i} title={l.first_name + ' ' + l.last_name} onPress = {() => {this.props.navigation.navigate("IndividualFriend", {username:l.username, first_name:l.first_name,last_name:l.last_name, ukey:l.ukey})}}  subtitle={l.username} bottomDivider/>
           ))
