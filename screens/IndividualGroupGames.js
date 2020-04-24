@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {View, Button, ScrollView, RefreshControl, TouchableOpacity} from 'react-native';
 import {Text, ListItem} from 'react-native-elements';
+import * as SecureStore from 'expo-secure-store';
 import GamePickListItem from '../components/GamePickListItem';
 
 export default class GroupGames extends React.Component {
@@ -41,25 +42,29 @@ export default class GroupGames extends React.Component {
   }
 
   fetchResults() {
-    try {
-      let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_results', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          sport: this.props.route.params.groupSport
+    SecureStore.getItemAsync('key').then((ukey) => {
+      try {
+        let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_results', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            sport: this.props.route.params.groupSport,
+            group_id: this.props.route.params.group_id,
+            ukey: ukey
+          })
         })
-      })
-      .then((response) => response.json())
-      .then((json) => {
-        this.setState({resultsList: json});
-        this.setState({refreshing: false});
-      });
-    } catch (err) {
-      console.log(err);
-    }
+        .then((response) => response.json())
+        .then((json) => {
+          this.setState({resultsList: json});
+          this.setState({refreshing: false});
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    });
   }
 
   refreshList() {
@@ -76,7 +81,7 @@ export default class GroupGames extends React.Component {
         {this.state.gamesList.map((l, i) => (<GamePickListItem key={i} team1={l.team1} team2={l.team2} game_id={l.game_id} group_id={this.props.route.params.group_id} sport={this.props.route.params.groupSport}/>))}
         {this.state.gamesList.length < 1 && (<View style={{alignItems: 'center', backgroundColor: 'white', paddingVertical: 10}}><Text style={{fontSize: 18}}>No Games Tomorrow!</Text></View>)}
         <View style={{alignItems: 'center', backgroundColor: 'lightgray', marginTop: 15}}><Text>Yesterday's Results</Text></View>
-        {this.state.resultsList.map((l, i) => (<ListItem key={i} title={`${l.team1}: ${l.team1_points}   |   ${l.team2}: ${l.team2_points}`} bottomDivider={true}/>))}
+        {this.state.resultsList.map((l, i) => (<ListItem key={i} title={`${l.team1}: ${l.team1_points}       ${l.team2}: ${l.team2_points}        ` + (l.correct == 1 ? '+25' : '+0')} bottomDivider={true}/>))}
         {this.state.resultsList.length < 1 && (<View style={{alignItems: 'center', backgroundColor: 'white', paddingVertical: 10}}><Text style={{fontSize: 18}}>No Previous Games!</Text></View>)}
       </ScrollView>
     );
