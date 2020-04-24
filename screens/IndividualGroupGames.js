@@ -71,9 +71,9 @@ export default class GroupGames extends React.Component {
 
   render() {
     return (
-      <ScrollView>
+      <ScrollView refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
         <View style={{alignItems: 'center', backgroundColor: 'lightgray'}}><Text>Upcoming Games</Text></View>
-        {this.state.gamesList.map((l, i) => (<GamePickListItem team1={l.team1} team2={l.team2} game_id={l.game_id} group_id={this.props.route.params.group_id} sport={this.props.route.params.groupSport}/>))}
+        {this.state.gamesList.map((l, i) => (<GamePickListItem key={i} team1={l.team1} team2={l.team2} game_id={l.game_id} group_id={this.props.route.params.group_id} sport={this.props.route.params.groupSport}/>))}
         {this.state.gamesList.length < 1 && (<View style={{alignItems: 'center', backgroundColor: 'white', paddingVertical: 10}}><Text style={{fontSize: 18}}>No Games Tomorrow!</Text></View>)}
         <View style={{alignItems: 'center', backgroundColor: 'lightgray', marginTop: 15}}><Text>Yesterday's Results</Text></View>
         {this.state.resultsList.map((l, i) => (<ListItem key={i} title={`${l.team1}: ${l.team1_points}   |   ${l.team2}: ${l.team2_points}`} bottomDivider={true}/>))}
