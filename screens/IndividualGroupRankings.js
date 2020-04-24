@@ -14,15 +14,14 @@ export default class GroupRankings extends React.Component {
 
   componentDidMount(){
     this.fetchRankings();
-    this.state.rankingsList.sort(this.compare);
   }
 
   compare(x, y){
     if(x.points < y.points){
-      return -1;
+      return 1;
     }
     if(x.points > y.points){
-      return 1;
+      return -1;
     }
     return 0;
   }
@@ -41,6 +40,7 @@ export default class GroupRankings extends React.Component {
       })
       .then((response) => response.json())
       .then((json) => {
+        json.sort(this.compare);
         this.setState({rankingsList: json});
         this.setState({refreshing: false});
       });
@@ -52,7 +52,6 @@ export default class GroupRankings extends React.Component {
   refreshList() {
     this.setState({refreshing: true});
     this.fetchRankings();
-    this.state.rankingsList.sort(this.compare);
   }
 
   render(){
