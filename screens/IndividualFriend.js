@@ -74,7 +74,6 @@ export default class IndividualFriend extends React.Component {
         })
         .then((response) => response.json())
         .then((json) => {
-          console.log(json);
           this.setState({numFriends:json.length});
           //this.setState({refreshing:false})
         });
@@ -98,7 +97,6 @@ export default class IndividualFriend extends React.Component {
         })
         .then((response) => response.json())
         .then((json) => {
-          console.log("numGroups = " + json.length);
           this.setState({numGroups: json.length});
           //this.setState({refreshing:false});
         });
@@ -147,7 +145,6 @@ export default class IndividualFriend extends React.Component {
         })
         .then((response) => response.json())
         .then((json) => {
-          console.log(json);
           if(json.result == 'success'){
             this.setState({bio:json.bio});
           this.setState({refreshing:false});
@@ -161,8 +158,6 @@ export default class IndividualFriend extends React.Component {
       }
   }
   fetchNumPoints() {
-    console.log("In fetchNumPoints");
-
       try{
         let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_total_points', {
           method: 'POST',
@@ -176,7 +171,6 @@ export default class IndividualFriend extends React.Component {
         })
         .then((response) => response.json())
         .then((json) => {
-          console.log(json);
           let total = 0;
           for (let index = 0; index < json.length; index++) {
             total += json[index].points;
@@ -211,7 +205,7 @@ export default class IndividualFriend extends React.Component {
     });
 
     this.props.navigation.navigate("Friends");
-    
+
   }
 
   fetchProfile() {
@@ -228,7 +222,7 @@ export default class IndividualFriend extends React.Component {
 
   }
 
- 
+
 
     render(){
       return (
@@ -279,8 +273,8 @@ export default class IndividualFriend extends React.Component {
             topDivider
             bottomDivider
           />
-          
-         
+
+
       </ScrollView>
         </React.Fragment>
       );

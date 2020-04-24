@@ -33,6 +33,7 @@ fetchProfile() {
  this.fetchNumGroups();
  this.fetchName();
  this.fetchBio();
+ this.fetchNumPoints();
 }
 
 fetchName() {
@@ -113,7 +114,6 @@ fetchNumGroups() {
 }
 
 fetchNumPoints() {
-  console.log("In fetchNumPoints");
   SecureStore.getItemAsync('key').then((ukey) => {
     try{
       let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_total_points', {
@@ -128,7 +128,6 @@ fetchNumPoints() {
       })
       .then((response) => response.json())
       .then((json) => {
-        console.log(json);
         let total = 0;
         for (let index = 0; index < json.length; index++) {
           total += json[index].points;
