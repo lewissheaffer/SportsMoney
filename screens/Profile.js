@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Text, ListItem, Input } from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Avatar, Overlay } from 'react-native-elements';
-import { StyleSheet, RefreshControl,  View, Button, Switch } from 'react-native';
+import { Avatar, Overlay, Button } from 'react-native-elements';
+import { StyleSheet, RefreshControl,  View, Switch, TextInput } from 'react-native';
 import Colors from '../constants/Colors';
 import { Logs } from 'expo';
 import * as SecureStore from 'expo-secure-store';
@@ -275,37 +275,28 @@ submitBioChange() {
             topDivider
             bottomDivider
           />
-          <Overlay
-            isVisible={this.state.editingBio}
-            windowBackgroundColor="rgba(100,100,100,.7)"
-            height="auto"
-            onBackdropPress={() => this.setState({editingBio:false})}
-          >
-            <React.Fragment>
-              <Text style={styles.margin10}>
-                Edit Bio
-              </Text>
-              <Input
-                placeholder='New Bio'
-                value = {this.state.bio}
+
+        <Overlay overlayStyle={this.state.styles.Overlay} isVisible={this.state.editingBio} height = {170}  onBackdropPress = {() => this.setState({editingBio:false})}>
+            <View style={{flex:1,}}>
+              <Text style = {[{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}, this.state.styles.Text]}>Edit Bio</Text>
+              <TextInput style = {[styles.input_container, this.state.styles.Input, {marginBottom: 15}]}
                 onChangeText={(bio) => this.setState({bio})}
+                value={this.state.bio}
+                placeholder = "Bio"
+                underlineColorAndroid='transparent'
               />
-              <Button
-              title="Cancel"
-              color="blue"
-              onPress={() => {
-                this.setState({editingBio:false})
-              }}></Button>
-              <Button
-               title="Confirm"
-               color="blue"
-               onPress={() => {
-                 this.setState({editingBio:false})
-                 this.submitBioChange()
-                 }}
-              >
-              </Button>
-            </React.Fragment>
+              <View style = {{flexDirection:'row-reverse', alignSelf: "flex-end"}}>
+                <View style={{width: 80}}>
+                  <Button title = {"Submit"} type = {'clear'}  onPress={() => {
+                    this.setState({editingBio:false})
+                    this.submitBioChange()
+                  }}/>
+                </View>
+                <View style={{width: 80}}>
+                  <Button title = {"Cancel"} type = {'clear'} onPress = {() => this.setState({editingBio:false})}/>
+                </View>
+              </View>
+            </View>
           </Overlay>
 
           <ListItem
@@ -327,7 +318,7 @@ submitBioChange() {
           />
 
           <ListItem
-          onPress={() => {SecureStore.deleteItemAsync('key'); this.props.navigation.reset({routes:[{name: "Login"}]});}}
+          onPress={() => {SecureStore.deleteItemAsync('key'); SecureStore.setItemAsync('theme', 'light'); this.props.navigation.reset({routes:[{name: "Login"}]});}}
           title={'Sign Out'}
           containerStyle={this.state.styles['ListItem.containerStyle']}
           titleStyle={this.state.styles['ListItem.titleStyle']}
@@ -358,5 +349,27 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 20,
         marginLeft: 10
-    }
+    },
+    input_container:{
+      textAlign:'left',
+      fontSize: 16,
+      color: 'rgba(0,0,0,0.54)',
+      ...Platform.select({
+        ios: {
+          borderRadius: 5,
+          paddingTop: 5,
+  	      borderWidth: 1,
+          borderColor: '#B0B0B0',
+          paddingBottom: 5,
+          paddingLeft: 10,
+          marginBottom: 15,
+          marginTop: 10,
+        },
+        android: {
+          marginTop: 8,
+          borderBottomWidth: 2,
+          borderColor: 'dodgerblue',
+        },
+      }),
+    },
 })

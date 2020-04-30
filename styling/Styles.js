@@ -57,7 +57,8 @@ const light = {
 
   'BottomTab': {
     backgroundColor: 'white',
-    height: 55
+    height: 55,
+    borderTopWidth: 0
   },
 
   'Header': {
@@ -159,7 +160,8 @@ const dark = {
 
   'BottomTab': {
     backgroundColor: '#222222',
-    height: 55
+    height: 55,
+    borderTopWidth: 0
   },
 
   'Header': {

@@ -49,6 +49,7 @@ export default class Login extends Component{
     .then((json) => {
       if(json.exists){
         SecureStore.setItemAsync('key', json.ukey);
+        SecureStore.setItemAsync('theme', 'light');
         Keyboard.dismiss();
         this.props.navigation.reset({routes:[{name: "BottomTabNavigator"}]});
       }else{

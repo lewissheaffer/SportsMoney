@@ -12,7 +12,6 @@ import Profile from '../screens/Profile';
 import { Overlay, Text, Button, Input } from 'react-native-elements';
 import * as SecureStore from 'expo-secure-store';
 
-
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Groups';
 
