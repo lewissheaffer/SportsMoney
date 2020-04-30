@@ -87,7 +87,15 @@ export default class GroupGames extends React.Component {
         <View style={[this.state.styles['IndividualGroupGames.section_header'], {marginTop: 20}]}><Text style={this.state.styles.Text}>Yesterday's Results</Text></View>
         {this.state.resultsList.map((l, i) => (<ListItem
           key={i}
-          title={`${l.team1}: ${l.team1_points}, ${l.team2}: ${l.team2_points}, ` + (l.correct == 1 ? '+25' : '+0')}
+          title={
+            <View>
+              <Text style={[{marginBottom: 5}, this.state.styles.Text]}>{l.team1}: <Text style={l.team1_points > l.team2_points ? {color: 'chartreuse'} : {color: 'red'}}>{l.team1_points}</Text></Text>
+              <Text style={this.state.styles.Text}>{l.team2}: <Text style={l.team1_points < l.team2_points ? {color: 'chartreuse'} : {color: 'red'}}>{l.team2_points}</Text></Text>
+            </View>
+          }
+          rightElement={
+            <Text style={[l.correct == 1 ? {color: 'chartreuse'} : this.state.styles.Text, {fontSize: 22}]}>{l.correct == 1 ? '+25' : '+0'}</Text>
+          }
           containerStyle={this.state.styles['ListItem.containerStyle']}
           titleStyle={this.state.styles['ListItem.titleStyle']}
           subtitleStyle={this.state.styles['ListItem.subtitleStyle']}

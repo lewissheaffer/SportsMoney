@@ -21,10 +21,11 @@ export default class Profile extends React.Component {
       firstName: "First Name",
       lastName:"Last Name",
       bio: "Biography",
+      bio2: '',
       refreshing: false,
       editingBio: false,
       theme: false,
-      styles: {}
+      styles: {},
     }
     this.changeColorTheme = this.changeColorTheme.bind(this);
   }
@@ -280,8 +281,8 @@ submitBioChange() {
             <View style={{flex:1,}}>
               <Text style = {[{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}, this.state.styles.Text]}>Edit Bio</Text>
               <TextInput style = {[styles.input_container, this.state.styles.Input, {marginBottom: 15}]}
-                onChangeText={(bio) => this.setState({bio})}
-                value={this.state.bio}
+                onChangeText={(bio) => this.setState({bio2: bio})}
+                value={this.state.bio2}
                 placeholder = "Bio"
                 underlineColorAndroid='transparent'
               />
@@ -293,7 +294,7 @@ submitBioChange() {
                   }}/>
                 </View>
                 <View style={{width: 80}}>
-                  <Button title = {"Cancel"} type = {'clear'} onPress = {() => this.setState({editingBio:false})}/>
+                  <Button title = {"Cancel"} type = {'clear'} onPress = {() => this.setState({editingBio:false, bio2: ''})}/>
                 </View>
               </View>
             </View>
