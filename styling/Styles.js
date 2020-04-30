@@ -138,7 +138,11 @@ const dark = {
   },
 
   'ListItem.containerStyle': {
-    backgroundColor: '#222222'
+    backgroundColor: '#222222',
+    borderTopWidth: 1,
+    borderTopColor: '#3e3e3e',
+    borderBottomWidth: 1,
+    borderBottomColor: '#3e3e3e'
   },
 
   'ListItem.titleStyle': {
