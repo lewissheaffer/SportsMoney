@@ -1,8 +1,9 @@
 import * as React from 'react';
 import {Text, ListItem} from 'react-native-elements';
-import {View, Button, ScrollView, RefreshControl} from 'react-native';
+import {View, Button, ScrollView, RefreshControl, StyleSheet} from 'react-native';
 import {useState} from 'react';
 import * as SecureStore from 'expo-secure-store';
+import {getStyles} from '../styling/Styles';
 
 export default class Groups extends React.Component {
   constructor(props) {
@@ -10,12 +11,15 @@ export default class Groups extends React.Component {
     this.state = {
       list: [],
       refreshing: false,
-      g_id: ''
+      g_id: '',
+      styles: {}
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.fetchGroups();
+    let styles = await (async () => getStyles())();
+    this.setState({styles: styles});
   }
 
   fetchGroups() {
@@ -44,14 +48,18 @@ export default class Groups extends React.Component {
   }
 
   render() {
-    return (<ScrollView refreshControl={<RefreshControl refreshing = {
+    return (<ScrollView style={this.state.styles.ScrollView} refreshControl={<RefreshControl refreshing = {
         this.state.refreshing
       }
       onRefresh = {
         () => this.refreshList()
       } />}>
       {
-        this.state.list.map((l, i) => (<ListItem key={i} title={l.name} onPress={() => {
+        this.state.list.map((l, i) => (<ListItem containerStyle={this.state.styles['ListItem.containerStyle']}
+          titleStyle={this.state.styles['ListItem.titleStyle']}
+          subtitleStyle={this.state.styles['ListItem.subtitleStyle']}
+          key={i} title={l.name}
+          onPress={() => {
             this.props.navigation.navigate("IndividualGroup", {
               groupName: l.name,
               groupSport: l.sport,

@@ -7,6 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Friends from '../screens/Friends';
 import IndividualFriend from '../screens/IndividualFriend';
 import { Ionicons } from '@expo/vector-icons';
+import {getStyles} from '../styling/Styles';
 
 const Stack = createStackNavigator();
 export default class FriendsNavigator extends Component{
@@ -14,7 +15,13 @@ export default class FriendsNavigator extends Component{
     super(props);
     this.state = {
       modal:false,
+      styles: {}
     }
+  }
+
+  async componentDidMount() {
+    let styles = await (async () => getStyles())();
+    this.setState({styles: styles});
   }
 
   render(){
@@ -24,9 +31,9 @@ export default class FriendsNavigator extends Component{
           <View style={{flex:1, backgroundColor:'white'}}>
             {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
               <Stack.Navigator initialRouteName = 'Friends'>
-                <Stack.Screen name="IndividualFriend" options = {{headerTitleAlign: 'center', headerTitleStyle: {fontSize:22}, }} component={IndividualFriend}/>
-                <Stack.Screen name="Friends" options = {{headerTitleAlign: 'center', headerTitleStyle: {fontSize:22}, headerRight: () => (
-                  <Ionicons name={'md-person-add'} size={35} style={{marginRight:20, }} onPress = {() => {this.setState({modal:true})}}/>)}} component={Friends}/>
+                <Stack.Screen name="IndividualFriend" options = {{headerTitleAlign: 'center', headerStyle: this.state.styles.Header, headerTitleStyle: this.state.styles.HeaderTitle, headerTintColor: 'dodgerblue' }} component={IndividualFriend}/>
+                <Stack.Screen name="Friends" options = {{headerTitleAlign: 'center', headerStyle: this.state.styles.Header, headerTitleStyle: this.state.styles.HeaderTitle, headerRight: () => (
+                  <Ionicons name={'md-person-add'} size={35} style={this.state.styles.HeaderIcon} onPress = {() => {this.setState({modal:true})}}/>)}} component={Friends}/>
               </Stack.Navigator>
           </View>
         </React.Fragment>

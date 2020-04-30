@@ -2,11 +2,13 @@ import * as React from 'react';
 import { Text, ListItem, Input } from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Avatar, Overlay } from 'react-native-elements';
-import { StyleSheet, RefreshControl,  View, Button } from 'react-native';
+import { StyleSheet, RefreshControl,  View, Button, Switch } from 'react-native';
 import Colors from '../constants/Colors';
 import { Logs } from 'expo';
 import * as SecureStore from 'expo-secure-store';
 import { clearUpdateCacheExperimentalAsync } from 'expo/build/Updates/Updates';
+import { Ionicons } from '@expo/vector-icons';
+import {getStyles} from '../styling/Styles';
 
 export default class Profile extends React.Component {
   constructor(props) {
@@ -14,18 +16,40 @@ export default class Profile extends React.Component {
     this.state = {
       numFriends: -1,
       numGroups: -1,
-      numPoints: 0,
+      numPoints: -1,
       username: "Profile Name",
       firstName: "First Name",
       lastName:"Last Name",
       bio: "Biography",
       refreshing: false,
       editingBio: false,
+      theme: false,
+      styles: {}
     }
+    this.changeColorTheme = this.changeColorTheme.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.fetchProfile();
+    SecureStore.getItemAsync('theme').then((theme) => {
+      if(theme == 'light'){
+        this.setState({theme: false});
+      }else{
+        this.setState({theme: true});
+      }
+      console.log(theme);
+    });
+    let styles = await (async () => getStyles())();
+    this.setState({styles: styles});
+  }
+
+  changeColorTheme = () => {
+    if(this.state.theme){
+      SecureStore.setItemAsync('theme', 'light');
+    }else{
+      SecureStore.setItemAsync('theme', 'dark');
+    }
+    this.setState({theme: !this.state.theme});
   }
 
 fetchProfile() {
@@ -205,7 +229,7 @@ submitBioChange() {
 
   render() {
     return (
-      <ScrollView  refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>} >
+      <ScrollView style={this.state.styles.ScrollView} refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>} >
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}>
           <View style={{ flexDirection: 'column' }}>
             <Avatar
@@ -217,33 +241,36 @@ submitBioChange() {
             />
           </View>
           <View style={{ flexDirection: 'column' }}>
-            <Text style={styles.topTextCenter} >Points</Text>
-            <Text style={styles.topTextCenter} >{this.state.numPoints}</Text>
+            <Text style={[styles.topTextCenter, this.state.styles.Text]} >Points</Text>
+            <Text style={[styles.topTextCenter, this.state.styles.Text]} >{this.state.numPoints}</Text>
           </View>
           <View style={{ flexDirection: 'column' }}>
-            <Text style={styles.topTextCenter} >Friends</Text>
-            <Text style={styles.topTextCenter} >{this.state.numFriends}</Text>
+            <Text style={[styles.topTextCenter, this.state.styles.Text]} >Friends</Text>
+            <Text style={[styles.topTextCenter, this.state.styles.Text]} >{this.state.numFriends}</Text>
           </View>
           <View style={{ flexDirection: 'column' }}>
-            <Text style={styles.topTextCenter} >Groups</Text>
-            <Text style={styles.topTextCenter} >{this.state.numGroups}</Text>
+            <Text style={[styles.topTextCenter, this.state.styles.Text]} >Groups</Text>
+            <Text style={[styles.topTextCenter, this.state.styles.Text]} >{this.state.numGroups}</Text>
           </View>
         </View>
 
         <View style={{ flexDirection: 'column'}}>
-          <Text style={styles.margin5}>
+          <Text style={[styles.margin5, this.state.styles.Text]}>
             {this.state.firstName} {this.state.lastName}
           </Text>
-          <Text style={styles.margin5}>
+          <Text style={[styles.margin5, this.state.styles.Text]}>
             Username: {this.state.username}
           </Text>
-          <Text style={styles.margin5}>
+          <Text style={[styles.margin5, this.state.styles.Text]}>
             {this.state.bio}
           </Text>
         </View>
           <ListItem
             onPress={() => {this.setState({editingBio:true})}}
             title={"Edit Bio"}
+            containerStyle={this.state.styles['ListItem.containerStyle']}
+            titleStyle={this.state.styles['ListItem.titleStyle']}
+            subtitleStyle={this.state.styles['ListItem.subtitleStyle']}
             chevron
             topDivider
             bottomDivider
@@ -282,12 +309,34 @@ submitBioChange() {
           </Overlay>
 
           <ListItem
+            title='Theme'
+            containerStyle={this.state.styles['ListItem.containerStyle']}
+            titleStyle={this.state.styles['ListItem.titleStyle']}
+            subtitleStyle={this.state.styles['ListItem.subtitleStyle']}
+            rightElement={
+              <View style={{flexDirection: 'row'}}>
+                <Ionicons name={'md-sunny'} size={25} style={this.state.styles.ColorThemePickerIcon}/>
+                  <Switch
+                    trackColor={{ false: "dodgerblue", true: 'dodgerblue' }}
+                    thumbColor={this.state.theme ? 'dodgerblue' : 'dodgerblue'}
+                    onChange={this.changeColorTheme}
+                    value={this.state.theme}/>
+                  <Ionicons name={'md-moon'} size={25} style={this.state.styles.ColorThemePickerIcon}/>
+              </View>
+            }
+          />
+
+          <ListItem
           onPress={() => {SecureStore.deleteItemAsync('key'); this.props.navigation.reset({routes:[{name: "Login"}]});}}
           title={'Sign Out'}
+          containerStyle={this.state.styles['ListItem.containerStyle']}
+          titleStyle={this.state.styles['ListItem.titleStyle']}
+          subtitleStyle={this.state.styles['ListItem.subtitleStyle']}
           chevron
           topDivider
           bottomDivider
           />
+
       </ScrollView>
     );
   }

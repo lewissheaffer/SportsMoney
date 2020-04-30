@@ -4,6 +4,7 @@ import {View, Picker, TextInput, Platform, StyleSheet} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Overlay, Text, Button, Input } from 'react-native-elements';
 import {sendMessage} from '../screens/Inbox';
+import {getStyles} from '../styling/Styles';
 
 export default class FriendMessageDialogModal extends React.Component {
   constructor(props) {
@@ -11,16 +12,22 @@ export default class FriendMessageDialogModal extends React.Component {
     this.state = {
       subject: '',
       message: '',
+      styles: {}
     }
+  }
+
+  async componentDidMount() {
+    let styles = await (async () => getStyles())();
+    this.setState({styles: styles});
   }
 
   render(){
     return (
-      <Overlay isVisible={this.props.isVisible} height = {235}  onBackdropPress = {() => {this.props.onClose()}}>
+      <Overlay overlayStyle={this.state.styles.Overlay} isVisible={this.props.isVisible} height = {235}  onBackdropPress = {() => {this.props.onClose()}}>
         <View style={{flex:1,}}>
-        <Text style = {{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}}>Send a message</Text>
-        <Input style = {styles.input_container} onChangeText = {(text) => this.setState({subject:text})} placeholder = "Subject" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.subject ? '' : 'Subject cannot be blank.'} />
-          <Input style = {styles.input_container} onChangeText = {(text) => this.setState({message:text})} placeholder = "Message" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.message ? '' : 'Message cannot be blank.'} />
+        <Text style = {[{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}, this.state.styles.Text]}>Send a message</Text>
+        <Input inputStyle={this.state.styles.Input} onChangeText = {(text) => this.setState({subject:text})} placeholder = "Subject" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.subject ? '' : 'Subject cannot be blank.'} />
+          <Input inputStyle={this.state.styles.Input} onChangeText = {(text) => this.setState({message:text})} placeholder = "Message" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.message ? '' : 'Message cannot be blank.'} />
           <View style = {{flexDirection:'row-reverse', alignSelf: "flex-end"}}>
             <View style={{width: 80}}>
               <Button title = {"Submit"} type = {'clear'} disabled={!this.state.message || !this.state.subject} onPress = {() => {
@@ -36,29 +43,3 @@ export default class FriendMessageDialogModal extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  input_container:{
-    textAlign:'left',
-    fontSize: 16,
-    color: 'rgba(0,0,0,0.54)',
-    ...Platform.select({
-      ios: {
-        backgroundColor: 'white',
-        borderRadius: 5,
-        paddingTop: 5,
-	      borderWidth: 1,
-        borderColor: '#B0B0B0',
-        paddingBottom: 5,
-        paddingLeft: 10,
-        marginBottom: 15,
-        marginTop: 10,
-      },
-      android: {
-        marginTop: 8,
-        borderBottomWidth: 2,
-        borderColor: 'dodgerblue',
-      },
-    }),
-  },
-});

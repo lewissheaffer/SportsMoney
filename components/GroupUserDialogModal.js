@@ -3,14 +3,21 @@ import { useState} from 'react';
 import {View, Picker, TextInput, Platform, StyleSheet} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Overlay, Text, Button, Input } from 'react-native-elements';
+import {getStyles} from '../styling/Styles';
 
 export default class GroupUserDialogModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       username: '',
-      exists: false
+      exists: false,
+      styles: {}
     }
+  }
+
+  async componentDidMount() {
+    let styles = await (async () => getStyles())();
+    this.setState({styles: styles});
   }
 
   checkUser = (username) => {
@@ -36,10 +43,10 @@ export default class GroupUserDialogModal extends React.Component {
 
   render(){
     return (
-      <Overlay isVisible={this.props.isVisible} height = {200}  onBackdropPress = {() => {this.props.onClose()}}>
+      <Overlay overlayStyle={this.state.styles.Overlay} isVisible={this.props.isVisible} height = {200}  onBackdropPress = {() => {this.props.onClose()}}>
         <View style={{flex:1,}}>
-          <Text style = {{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}}>Invite a User</Text>
-          <Input style = {styles.input_container} onChangeText = {(text) => {this.setState({username:text}); this.checkUser(text)}} placeholder = "Username" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.exists ? '' : 'User does not exist.'} />
+          <Text style = {[{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}, this.state.styles.Text]}>Invite a User</Text>
+          <Input inputStyle={this.state.styles.Input} onChangeText = {(text) => {this.setState({username:text}); this.checkUser(text)}} placeholder = "Username" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.exists ? '' : 'User does not exist.'} />
           <View style = {{flexDirection:'row-reverse', alignSelf: "flex-end"}}>
             <View style={{width: 80}}>
               <Button title = {"Submit"} type = {'clear'} disabled={!this.state.exists} onPress = {() => {
@@ -55,29 +62,3 @@ export default class GroupUserDialogModal extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  input_container:{
-    textAlign:'left',
-    fontSize: 16,
-    color: 'rgba(0,0,0,0.54)',
-    ...Platform.select({
-      ios: {
-        backgroundColor: 'white',
-        borderRadius: 5,
-        paddingTop: 5,
-	      borderWidth: 1,
-        borderColor: '#B0B0B0',
-        paddingBottom: 5,
-        paddingLeft: 10,
-        marginBottom: 15,
-        marginTop: 10,
-      },
-      android: {
-        marginTop: 8,
-        borderBottomWidth: 2,
-        borderColor: 'dodgerblue',
-      },
-    }),
-  },
-});

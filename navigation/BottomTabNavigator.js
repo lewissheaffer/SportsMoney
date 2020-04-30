@@ -24,39 +24,32 @@ export default function BottomTabNavigator({ navigation, route }) {
 
   return (
     <React.Fragment>
-
-
-      <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME} tabBarOptions = {{style: {height:55}}}>
+      <BottomTab.Navigator
+        initialRouteName={INITIAL_ROUTE_NAME}
+        tabBarOptions = {{
+          style: route.params.styles.BottomTab,
+          activeTintColor: 'dodgerblue',
+          inactiveTintColor: 'rgba(104, 171, 221, 0.69)'
+        }}>
         <BottomTab.Screen
           name="Groups"
           component={GroupNavigator}
-          header={{
-            visible:false,
-          }}
           options={{
             title: 'Groups',
-            headerShown:false,
             tabBarIcon: ({focused}) => <TabBarIcon focused={focused} name="md-basketball"/>,
           }}
         />
         <BottomTab.Screen
           name="Friends"
           component={FriendsNavigator}
-          header={{
-            visible:false,
-          }}
           options={{
             title: 'Friends',
-            headerShown:false,
             tabBarIcon: ({focused}) => <TabBarIcon focused={focused} name="md-people"/>,
           }}
         />
         <BottomTab.Screen
           name="Inbox"
           component={InboxNavigator}
-          header={{
-            visible:false,
-          }}
           options={{
             title: 'Inbox',
             tabBarIcon: ({focused}) => <TabBarIcon focused={focused} name="md-mail"/>,
@@ -67,7 +60,6 @@ export default function BottomTabNavigator({ navigation, route }) {
           component={Profile}
           options={{
             title: 'Profile',
-            headerShown:false,
             tabBarIcon: ({focused}) => <TabBarIcon focused={focused} name="md-person"/>,
           }}
         />

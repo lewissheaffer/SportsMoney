@@ -2,6 +2,7 @@ import * as React from 'react';
 import {View, Button, ScrollView, RefreshControl} from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import {getStyles} from '../styling/Styles';
 
 export default class GroupRankings extends React.Component {
   constructor(props) {
@@ -9,11 +10,14 @@ export default class GroupRankings extends React.Component {
     this.state = {
       rankingsList:[],
       refreshing: false,
+      styles: {}
     }
   }
 
-  componentDidMount(){
+  async componentDidMount(){
     this.fetchRankings();
+    let styles = await (async () => getStyles())();
+    this.setState({styles: styles});
   }
 
   compare(x, y){
@@ -56,10 +60,17 @@ export default class GroupRankings extends React.Component {
 
   render(){
     return (
-      <ScrollView refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
+      <ScrollView style={this.state.styles.ScrollView} refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
         {
           this.state.rankingsList.map((l, i) => (
-            <ListItem key={i} title={`${l.first_name} ${l.last_name}: ${l.points} pts`} subtitle={l.username} bottomDivider/>
+            <ListItem
+              key={i}
+              title={`${l.first_name} ${l.last_name}: ${l.points} pts`}
+              subtitle={l.username}
+              containerStyle={this.state.styles['ListItem.containerStyle']}
+              titleStyle={this.state.styles['ListItem.titleStyle']}
+              subtitleStyle={this.state.styles['ListItem.subtitleStyle']}
+              bottomDivider/>
           ))
         }
       </ScrollView>

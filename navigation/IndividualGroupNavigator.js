@@ -7,6 +7,7 @@ import GroupGames from '../screens/IndividualGroupGames'
 import { Ionicons } from '@expo/vector-icons';
 import GroupUserDialogModal from "../components/GroupUserDialogModal";
 import * as SecureStore from 'expo-secure-store';
+import {getStyles} from '../styling/Styles';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -15,11 +16,15 @@ export default class IndividualGroupNavigator extends React.Component {
     super(props);
     this.state = {
       inviteModalVisible:false,
+      styles: {}
     }
   }
-  componentDidMount() {
+
+  async componentDidMount() {
+    let styles = await (async () => getStyles())();
+    this.setState({styles: styles});
     this.props.navigation.setOptions({headerTitle: this.props.route.params.groupName, headerRight: () => (
-      <Text style={{marginRight:20, }} onPress = {() => {this.setState({inviteModalVisible:true})}}>Invite User</Text>)});
+    <Text style={[{marginRight:20,}, this.state.styles.Text]} onPress = {() => {this.setState({inviteModalVisible:true})}}>Invite User</Text>)});
   }
 
   GroupMemberInvite(username) {
@@ -53,7 +58,14 @@ export default class IndividualGroupNavigator extends React.Component {
   return (
     <React.Fragment>
       <GroupUserDialogModal onSubmit = {(username) => {this.GroupMemberInvite(username); this.setState({inviteModalVisible:false});} } isVisible = {this.state.inviteModalVisible} onClose = {() => {this.setState({inviteModalVisible:false})}}/>
-      <Tab.Navigator>
+      <Tab.Navigator
+        tabBarOptions={{
+          style: this.state.styles.TopTab,
+          activeTintColor: 'dodgerblue',
+          inactiveTintColor: 'rgba(104, 171, 221, 0.69)',
+          indicatorColor: 'dodgerblue'
+        }}
+      >
         <Tab.Screen name="Games" component={GroupGames} initialParams={{ groupSport: this.props.route.params.groupSport, group_id: this.props.route.params.group_id}}/>
         <Tab.Screen name="Rankings" component={GroupRankings} initialParams={{group_id: this.props.route.params.group_id}}/>
       </Tab.Navigator>

@@ -3,7 +3,7 @@ import { useState} from 'react';
 import {View, Picker, TextInput, Platform, StyleSheet} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Overlay, Text, Button, Input } from 'react-native-elements';
-
+import {getStyles} from '../styling/Styles';
 
 export default class GroupDialogModal extends React.Component {
   constructor(props) {
@@ -14,8 +14,15 @@ export default class GroupDialogModal extends React.Component {
       exists: false,
       sport:"",
       Findgroupname: "",
+      styles: {}
     }
   }
+
+  async componentDidMount() {
+    let styles = await (async () => getStyles())();
+    this.setState({styles: styles});
+  }
+
   checkGroup = (g_id) => {
     try{
       let response = fetch('https://sportsmoneynodejs.appspot.com/check_groups', {
@@ -40,12 +47,12 @@ export default class GroupDialogModal extends React.Component {
   }
   render(){
     return (
-      <Overlay isVisible={this.props.isVisible} height = {225}  onBackdropPress = {() => {this.props.onClose()}}>
+      <Overlay overlayStyle={this.state.styles.Overlay} isVisible={this.props.isVisible} height = {225}  onBackdropPress = {() => {this.props.onClose()}}>
         <View style={{flex:1,}}>
-          <Text style = {{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}}>Create a Group</Text>
-          <TextInput style = {styles.input_container} onChangeText = {(text) => {this.setState({groupName:text})}} placeholder = "Group Name" underlineColorAndroid='transparent' />
-          <Text  style = {{marginTop: 15, marginBottom: 0,}}>Select League</Text>
-          <Picker style={{ height: 50, width: 150}} selectedValue={this.state.selectedValue} onValueChange={(itemValue, itemIndex) => this.setState({selectedValue:itemValue})}>
+          <Text style = {[{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}, this.state.styles.Text]}>Create a Group</Text>
+          <TextInput style = {[styles.input_container, this.state.styles.Input]} onChangeText = {(text) => {this.setState({groupName:text})}} placeholder = "Group Name" underlineColorAndroid='transparent' />
+          <Text style = {[{marginTop: 15, marginBottom: 0,}, this.state.styles.Text]}>Select League</Text>
+          <Picker style={[{ height: 50, width: 150}, this.state.styles.Picker]} selectedValue={this.state.selectedValue} onValueChange={(itemValue, itemIndex) => this.setState({selectedValue:itemValue})}>
             <Picker.Item label="NBA" value="NBA" />
             <Picker.Item label="NFL" value="NFL" />
             <Picker.Item label="MLB" value="MLB" />
@@ -72,7 +79,6 @@ const styles = StyleSheet.create({
     color: 'rgba(0,0,0,0.54)',
     ...Platform.select({
       ios: {
-        backgroundColor: 'white',
         borderRadius: 5,
         paddingTop: 5,
 	      borderWidth: 1,

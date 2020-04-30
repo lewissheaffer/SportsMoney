@@ -10,6 +10,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Groups from '../screens/Groups';
 import Profile from '../screens/Profile';
 import BottomTabNavigator from '../navigation/BottomTabNavigator';
+import {getStyles} from '../styling/Styles';
 
 const Stack = createStackNavigator();
 
@@ -17,7 +18,14 @@ export default class Authentication extends Component{
 
   constructor(props){
     super(props);
-    this.state = {}
+    this.state = {
+      styles: {}
+    }
+  }
+
+  async UNSAFE_componentWillMount() {
+    let styles = await (async () => getStyles())();
+    this.setState({styles: styles});
   }
 
   render(){
@@ -28,7 +36,7 @@ export default class Authentication extends Component{
             <Stack.Navigator initialRouteName = 'Login'>
               <Stack.Screen name="Login" options = {{headerShown:false, headerTitleAlign: 'center', headerTitleStyle: {fontSize:22}, }} component={Login}/>
               <Stack.Screen name="CreateUser" options = {{headerShown:false, headerTitleAlign: 'center', headerTitleStyle: {fontSize:22}, }} component={CreateUser}/>
-              <Stack.Screen name="BottomTabNavigator" options = {{headerTitleAlign: 'center', headerTitleStyle: {fontSize:22}, }} component={BottomTabNavigator}/>
+              <Stack.Screen name="BottomTabNavigator" options = {{headerTitleAlign: 'center', headerStyle: this.state.styles.Header, headerTitleStyle: this.state.styles.HeaderTitle, }} component={BottomTabNavigator} initialParams={{styles: this.state.styles}}/>
             </Stack.Navigator>
           </NavigationContainer>
         </View>

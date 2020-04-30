@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Overlay, Text, Button, Input } from 'react-native-elements';
 import {addFriend} from '../screens/Friends';
 import {sendmessage} from '../screens/Inbox';
+import {getStyles} from '../styling/Styles';
 
 export default class FriendDialogModal extends React.Component {
   constructor(props) {
@@ -16,7 +17,13 @@ export default class FriendDialogModal extends React.Component {
       Friendexists: false,
       Message:'',
       subject:'',
+      styles: {}
     }
+  }
+
+  async componentDidMount() {
+    let styles = await (async () => getStyles())();
+    this.setState({styles: styles});
   }
 
   checkUser = (username) => {
@@ -63,10 +70,10 @@ export default class FriendDialogModal extends React.Component {
 
   render(){
     return (
-      <Overlay isVisible={this.props.isVisible} height = {175}  onBackdropPress = {() => {this.props.onClose()}}>
+      <Overlay overlayStyle={this.state.styles.Overlay} isVisible={this.props.isVisible} height = {175}  onBackdropPress = {() => {this.props.onClose()}}>
         <View style={{flex:1,}}>
-          <Text style = {{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}}>Add a Friend</Text>
-          <Input style = {styles.input_container} onChangeText = {(text) => {this.setState({username:text}); this.checkUser(text)}} placeholder = "Friend's username" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.exists ? '' : 'User does not exist.'} />
+          <Text style = {[{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}, this.state.styles.Text]}>Add a Friend</Text>
+          <Input inputStyle={this.state.styles.Input} onChangeText = {(text) => {this.setState({username:text}); this.checkUser(text)}} placeholder = "Friend's username" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.exists ? '' : 'User does not exist.'} />
           <View style = {{flexDirection:'row-reverse', alignSelf: "flex-end"}}>
             <View style={{width: 80}}>
               <Button title = {"Submit"} type = {'clear'} disabled={!this.state.exists} onPress = {() => {

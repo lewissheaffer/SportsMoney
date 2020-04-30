@@ -3,21 +3,28 @@ import { useState} from 'react';
 import {View, Picker, TextInput, Platform, StyleSheet} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Overlay, Text, Button, Input } from 'react-native-elements';
+import {getStyles} from '../styling/Styles';
 
 
 export default class MessageModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      styles: {}
     }
+  }
+
+  async componentDidMount() {
+    let styles = await (async () => getStyles())();
+    this.setState({styles: styles});
   }
 
   render(){
     return (
-      <Overlay isVisible={this.props.isVisible} height = {150}  onBackdropPress = {() => {this.props.onClose()}}>
+      <Overlay overlayStyle={this.state.styles.Overlay} isVisible={this.props.isVisible} height = {150}  onBackdropPress = {() => {this.props.onClose()}}>
         <View style={{flex:1,}}>
-          <Text style = {{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}}>{this.props.subject}</Text>
-          <Text style = {{marginTop: 5, marginBottom: 10, fontSize: 20}}>{this.props.message}</Text>
+          <Text style = {[{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}, this.state.styles.Text]}>{this.props.subject}</Text>
+          <Text style = {[{marginTop: 5, marginBottom: 10, fontSize: 20}, this.state.styles.Text]}>{this.props.message}</Text>
           <View style = {{flexDirection:'row-reverse', alignSelf: "flex-end"}}>
             <View style={{width: 80}}>
               <Button title = {"Close"} type = {'clear'} onPress = {() => this.props.onClose()}/>

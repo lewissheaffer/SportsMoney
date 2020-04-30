@@ -3,6 +3,7 @@ import { Text, ListItem} from 'react-native-elements';
 import {View, Button, ScrollView, RefreshControl, Alert} from 'react-native';
 import {useState} from 'react';
 import * as SecureStore from 'expo-secure-store';
+import {getStyles} from '../styling/Styles';
 
 export default class Friends extends React.Component {
   constructor(props) {
@@ -10,11 +11,14 @@ export default class Friends extends React.Component {
     this.state = {
       list: [],
       refreshing: false,
+      styles: {}
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.refreshList();
+    let styles = await (async () => getStyles())();
+    this.setState({styles: styles});
   }
 
   fetchFriends() {
@@ -48,11 +52,16 @@ export default class Friends extends React.Component {
 
   render() {
     return (
-      <ScrollView refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
+      <ScrollView style={this.state.styles.ScrollView} refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
         {
-          
+
           this.state.list.map((l, i) => (
-            <ListItem key={i} title={l.first_name + ' ' + l.last_name} onPress = {() => {this.props.navigation.navigate("IndividualFriend", {username:l.username, first_name:l.first_name,last_name:l.last_name, ukey:l.ukey})}}  subtitle={l.username} bottomDivider/>
+            <ListItem key={i}
+              title={l.first_name + ' ' + l.last_name}
+              containerStyle={this.state.styles['ListItem.containerStyle']}
+              titleStyle={this.state.styles['ListItem.titleStyle']}
+              subtitleStyle={this.state.styles['ListItem.subtitleStyle']}
+              onPress = {() => {this.props.navigation.navigate("IndividualFriend", {username:l.username, first_name:l.first_name,last_name:l.last_name, ukey:l.ukey})}}  subtitle={l.username} bottomDivider/>
           ))
         }
       </ScrollView>

@@ -12,6 +12,7 @@ import {
   ListItem
 } from 'react-native-elements';
 import * as SecureStore from 'expo-secure-store';
+import {getStyles} from '../styling/Styles';
 
 export default class GamePickListItem extends React.Component {
   constructor(props) {
@@ -21,12 +22,15 @@ export default class GamePickListItem extends React.Component {
       team2: this.props.team2,
       game_id: this.props.game_id,
       sport: this.props.sport,
-      pick: ''
+      pick: '',
+      styles: {}
     }
   }
 
-  componentDidMount(){
+  async componentDidMount(){
     this.fetchPick();
+    let styles = await (async () => getStyles())();
+    this.setState({styles: styles});
   }
 
   updatePick(){
@@ -85,17 +89,10 @@ export default class GamePickListItem extends React.Component {
 
   render() {
     return (
-      <View style = {
-        {
-          backgroundColor: 'white',
-          borderBottomWidth: 1,
-          borderBottomColor: 'lightgray',
-          flexDirection: 'row'
-        }
-      } >
-        <TouchableOpacity style={[styles.TouchableOpacity, (this.state.pick == this.state.team1 && {backgroundColor: 'chartreuse'})]} onPress={() => {this.setState({pick: this.state.team1}); this.updatePick();}}><Text>{this.state.team1}</Text></TouchableOpacity>
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text>vs</Text></View>
-        <TouchableOpacity style={[styles.TouchableOpacity, (this.state.pick == this.state.team2 && {backgroundColor: 'chartreuse'})]} onPress={() => {this.setState({pick: this.state.team2}); this.updatePick();}}><Text>{this.state.team2}</Text></TouchableOpacity>
+      <View style = {this.state.styles['GamePickListItem.View']} >
+        <TouchableOpacity style={[this.state.styles['GamePickListItem.TouchableOpacity'], (this.state.pick == this.state.team1 && {backgroundColor: 'chartreuse'})]} onPress={() => {this.setState({pick: this.state.team1}); this.updatePick();}}><Text style={this.state.pick == this.state.team1 ? {color: 'black'} : this.state.styles.Text}>{this.state.team1}</Text></TouchableOpacity>
+        <View style={[{flex: 1, alignItems: 'center', justifyContent: 'center'}, this.state.styles.Header]}><Text style={this.state.styles.Text}>vs</Text></View>
+        <TouchableOpacity style={[this.state.styles['GamePickListItem.TouchableOpacity'], (this.state.pick == this.state.team2 && {backgroundColor: 'chartreuse'})]} onPress={() => {this.setState({pick: this.state.team2}); this.updatePick();}}><Text style={this.state.pick == this.state.team2 ? {color: 'black'} : this.state.styles.Text}>{this.state.team2}</Text></TouchableOpacity>
       </View>
     );
   }
