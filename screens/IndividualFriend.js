@@ -206,7 +206,7 @@ export default class IndividualFriend extends React.Component {
       }
     });
 
-    this.props.navigation.navigate("Friends");
+    this.props.navigation.goBack();
 
   }
 

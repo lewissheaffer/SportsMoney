@@ -4,6 +4,8 @@ import {View, Button, ScrollView, RefreshControl, StyleSheet} from 'react-native
 import {useState} from 'react';
 import * as SecureStore from 'expo-secure-store';
 import {getStyles} from '../styling/Styles';
+import GroupDialogModal from '../components/GroupDialogModal';
+import { Ionicons } from '@expo/vector-icons';
 
 export default class Groups extends React.Component {
   constructor(props) {
@@ -12,7 +14,8 @@ export default class Groups extends React.Component {
       list: [],
       refreshing: false,
       g_id: '',
-      styles: {}
+      styles: {},
+      modal: false,
     }
   }
 
@@ -20,6 +23,25 @@ export default class Groups extends React.Component {
     this.fetchGroups();
     let styles = await (async () => getStyles())();
     this.setState({styles: styles});
+    this.props.navigation.setOptions({headerRight: () => (
+    <Ionicons name={'md-add-circle-outline'} size={35} style={this.state.styles.HeaderIcon} onPress = {() => {this.setState({modal:true})}}/>)});
+  }
+
+  createGroup(name, sport) {
+    SecureStore.getItemAsync('key').then((ukey) => {
+      try {
+        let response = fetch('https://sportsmoneynodejs.appspot.com/create_group', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ukey: ukey, name: name, sport: sport})
+        })
+      } catch (err) {
+        console.log(err);
+      }
+    });
   }
 
   fetchGroups() {
@@ -48,60 +70,30 @@ export default class Groups extends React.Component {
   }
 
   render() {
-    return (<ScrollView style={this.state.styles.ScrollView} refreshControl={<RefreshControl refreshing = {
-        this.state.refreshing
-      }
-      onRefresh = {
-        () => this.refreshList()
-      } />}>
-      {
-        this.state.list.map((l, i) => (<ListItem containerStyle={this.state.styles['ListItem.containerStyle']}
-          titleStyle={this.state.styles['ListItem.titleStyle']}
-          subtitleStyle={this.state.styles['ListItem.subtitleStyle']}
-          key={i} title={l.name}
-          onPress={() => {
-            this.props.navigation.navigate("IndividualGroup", {
-              groupName: l.name,
-              groupSport: l.sport,
-              group_id: l.group_id,
-            })
-          }} subtitle={l.sport} bottomDivider={true}/>))
-      }
-    </ScrollView>);
+    return (
+      <React.Fragment>
+        <GroupDialogModal isVisible = {this.state.modal} onClose = {() => {this.setState({modal:false})}} onSubmit = {(groupName,league) => {this.setState({modal:false}); this.createGroup(groupName,league); this.refreshList();}}/>
+        <ScrollView style={this.state.styles.ScrollView} refreshControl={<RefreshControl refreshing = {
+          this.state.refreshing
+        }
+        onRefresh = {
+          () => this.refreshList()
+        } />}>
+        {
+          this.state.list.map((l, i) => (<ListItem containerStyle={this.state.styles['ListItem.containerStyle']}
+            titleStyle={this.state.styles['ListItem.titleStyle']}
+            subtitleStyle={this.state.styles['ListItem.subtitleStyle']}
+            key={i} title={l.name}
+            onPress={() => {
+              this.props.navigation.navigate("IndividualGroup", {
+                groupName: l.name,
+                groupSport: l.sport,
+                group_id: l.group_id,
+              })
+            }} subtitle={l.sport} bottomDivider={true}/>))
+        }
+      </ScrollView>
+    </React.Fragment>
+  );
   }
-}
-
-export function createGroup(name, sport) {
-  SecureStore.getItemAsync('key').then((ukey) => {
-    try {
-      let response = fetch('https://sportsmoneynodejs.appspot.com/create_group', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ukey: ukey, name: name, sport: sport})
-      })
-    } catch (err) {
-      console.log(err);
-    }
-  });
-}
-
-export function addGroup(g_id, name, sport) {
-  SecureStore.getItemAsync('key').then((ukey) => {
-    try {
-      let response = fetch('https://sportsmoneynodejs.appspot.com/add_group', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ukey: ukey, group_id: g_id, name: name, sport: sport})
-      })
-
-    } catch (err) {
-      console.log(err);
-    }
-  });
 }

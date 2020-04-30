@@ -19,6 +19,11 @@ export default class Friends extends React.Component {
     this.refreshList();
     let styles = await (async () => getStyles())();
     this.setState({styles: styles});
+    this.props.navigation.addListener(
+      'focus', () => {
+        this.refreshList();
+      }
+    );
   }
 
   fetchFriends() {
