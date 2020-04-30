@@ -64,6 +64,11 @@ const light = {
     backgroundColor: 'white'
   },
 
+  'HeaderTitle': {
+    color: 'black',
+    fontSize: 22
+  },
+
   'HeaderIcon': {
     color: 'black',
     marginRight: 20,
@@ -102,7 +107,7 @@ const dark = {
   'GamePickListItem.View': {
     backgroundColor: 'white',
     borderBottomWidth: 1,
-    borderBottomColor: 'lightgray',
+    borderBottomColor: '#3e3e3e',
     flexDirection: 'row'
   },
 
@@ -112,7 +117,7 @@ const dark = {
     alignItems: 'center',
     borderRightWidth: 1,
     borderLeftWidth: 1,
-    borderColor: 'lightgray',
+    borderColor: '#3e3e3e',
     backgroundColor: '#222222'
   },
 
@@ -129,7 +134,7 @@ const dark = {
 
   'IndividualGroupGames.section_header': {
     alignItems: 'center',
-    backgroundColor: 'lightgray'
+    backgroundColor: '#3e3e3e'
   },
 
   'ListItem.containerStyle': {
