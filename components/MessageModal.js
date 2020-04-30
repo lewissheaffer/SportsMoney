@@ -21,7 +21,7 @@ export default class MessageModal extends React.Component {
 
   render(){
     return (
-      <Overlay overlayStyle={this.state.styles.Overlay} isVisible={this.props.isVisible} height = {150}  onBackdropPress = {() => {this.props.onClose()}}>
+      <Overlay overlayStyle={this.state.styles.Overlay} isVisible={this.props.isVisible} height = {120 + (23 * Math.ceil(this.props.message.length/25))}  onBackdropPress = {() => {this.props.onClose()}}>
         <View style={{flex:1,}}>
           <Text style = {[{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}, this.state.styles.Text]}>{this.props.subject}</Text>
           <Text style = {[{marginTop: 5, marginBottom: 10, fontSize: 20}, this.state.styles.Text]}>{this.props.message}</Text>

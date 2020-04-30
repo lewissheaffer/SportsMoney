@@ -94,12 +94,26 @@ export default class Inbox extends React.Component {
               <ListItem key={i}
                 containerStyle={this.state.styles['ListItem.containerStyle']}
                 titleStyle={this.state.styles['ListItem.titleStyle']}
+                title = {
+                  <React.Fragment>
+                  {
+                    (l.type =='friend') && <Text style = {[{fontSize: 17,}, this.state.styles.Text]}>{'Friend Request from: ' + l.username}</Text>
+                  }
+                  {
+                    (l.type =='group') && <Text style = {[{fontSize: 17,}, this.state.styles.Text]}>{'Group Invite from: ' + l.username}</Text>
+                  }
+                  {
+                    (l.type == 'message') && <Text style = {[{fontSize: 17,}, this.state.styles.Text]}>{'Message from: ' + l.username}</Text>
+                  }
+
+                  </React.Fragment>
+                }
                 subtitleStyle={this.state.styles['ListItem.subtitleStyle']}
                 onPress = {() => {if (l.type == "message") {this.setState({subject:l.subject, message:l.contents, modalVisible:true});}}} subtitle={
                 <React.Fragment>
                  {
                    (l.type =='friend') && <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                     <Text style = {{fontSize: 17,}}>{'Friend Request from: ' + l.username}</Text>
+                     <Text style = {[{fontSize: 17,}, this.state.styles.Text]}>{''}</Text>
                      <View style = {{flexDirection:'row', justifyContent:'flex-end'}}>
                        <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, true)}}>
                           <Ionicons name={'md-checkmark-circle'} color = 'green' size={35} style={{marginRight:20, }}/>
@@ -112,8 +126,8 @@ export default class Inbox extends React.Component {
                  }
                  {
                      (l.type =='group') && <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                       <Text style = {{fontSize: 17,}}>{'Group Invite from: ' + l.username}</Text>
-                      <View style = {{flexDirection:'row', justifyContent:'flex-end'}}>
+                       <Text style = {[{fontSize: 17,}, this.state.styles.Text]}>{''}</Text>
+                      <View style = {{flexDirection:'row', alignItems:'flex-end'}}>
                          <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, true, l.subject)}}>
                             <Ionicons name={'md-checkmark-circle'} color = 'green' size={35} style={{marginRight:20, }}/>
                          </TouchableOpacity>
@@ -125,8 +139,8 @@ export default class Inbox extends React.Component {
                  }
                  {
                    (l.type == 'message') && <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                     <Text style = {[{fontSize: 17,}, this.state.styles.Text]}>{'Message from: ' + l.username}</Text>
-                     <Text style = {[{fontSize: 17,}, this.state.styles.Text]}>{"Click to View"}</Text>
+                     <Text style = {[{fontSize: 17,}, this.state.styles.Text]}>{'Tap to view'}</Text>
+                     <Text style = {[{fontSize: 17,}, this.state.styles.Text]}>{""}</Text>
                      <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, false, l.subject)}}>
                         <Ionicons name={'md-close-circle'} Title="Delete" color = 'red' size={35} style={{marginRight:10, }} />
                      </TouchableOpacity>
