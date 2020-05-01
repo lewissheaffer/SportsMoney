@@ -5,10 +5,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { Overlay, Text, Button, Input } from 'react-native-elements';
 import {addFriend} from '../screens/Friends';
 import {sendmessage} from '../screens/Inbox';
-import {getStyles} from '../styling/Styles';
 import * as SecureStore from 'expo-secure-store';
+import {connect} from 'react-redux';
 
-export default class FriendDialogModal extends React.Component {
+class FriendDialogModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -18,16 +18,10 @@ export default class FriendDialogModal extends React.Component {
       Friendexists: false,
       Message:'',
       subject:'',
-      styles: {}
     }
   }
 
-  async componentDidMount() {
-    let styles = await (async () => getStyles())();
-    this.setState({styles: styles});
-  }
-
-  checkUser = (friendsusername) => {
+  checkUser = (username) => {
     try{
       let response = fetch('https://sportsmoneynodejs.appspot.com/check_user', {
         method: 'POST',
@@ -73,10 +67,10 @@ export default class FriendDialogModal extends React.Component {
 
   render(){
     return (
-      <Overlay overlayStyle={this.state.styles.Overlay} isVisible={this.props.isVisible} height = {175}  onBackdropPress = {() => {this.props.onClose()}}>
+      <Overlay overlayStyle={this.props.styles.styles.Overlay} isVisible={this.props.isVisible} height = {175}  onBackdropPress = {() => {this.props.onClose()}}>
         <View style={{flex:1,}}>
-          <Text style = {[{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}, this.state.styles.Text]}>Add a Friend</Text>
-          <Input inputStyle={this.state.styles.Input} onChangeText = {(text) => {this.setState({FriendsUsername:text}); this.checkUser(text); this.fetchName()}} placeholder = "Friend's username" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.exists ? '' : 'User does not exist.'} />
+          <Text style = {[{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}, this.props.styles.styles.Text]}>Add a Friend</Text>
+          <Input inputStyle={this.props.styles.styles.Input} onChangeText = {(text) => {this.setState({username:text}); this.checkUser(text)}} placeholder = "Friend's username" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.exists ? '' : 'User does not exist.'} />
           <View style = {{flexDirection:'row-reverse', alignSelf: "flex-end"}}>
             <View style={{width: 80}}>
               <Button title = {"Submit"} type = {'clear'} disabled={!this.state.exists || (this.state.username == this.state.FriendsUsername)} onPress = {() => {
@@ -92,6 +86,13 @@ export default class FriendDialogModal extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  const {styles} = state;
+  return {styles};
+}
+
+export default connect(mapStateToProps)(FriendDialogModal);
 
 const styles = StyleSheet.create({
   input_container:{

@@ -8,9 +8,9 @@ import * as SecureStore from 'expo-secure-store';
 import Colors from '../constants/Colors';
 import {  StyleSheet, RefreshControl,  View, Button} from 'react-native';
 import Profile from './Profile';
-import {getStyles} from '../styling/Styles';
+import {connect} from 'react-redux';
 
-export default class IndividualFriend extends React.Component {
+class IndividualFriend extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -24,16 +24,13 @@ export default class IndividualFriend extends React.Component {
       ukey: this.props.route.params.ukey,
       bio: "Biography",
       refreshing: false,
-      styles: {}
     }
   }
 
   async componentDidMount() {
     this.refreshList();
-    let styles = await (async () => getStyles())();
-    this.setState({styles: styles});
     this.props.navigation.setOptions({headerTitle: this.props.route.params.first_name + " " + this.props.route.params.last_name, headerRight: () => (
-      <MaterialCommunityIcons name={'message-plus'} size={35} style={this.state.styles.HeaderIcon} onPress = {() => {this.setState({messageModal:true})}}/>
+      <MaterialCommunityIcons name={'message-plus'} size={35} style={this.props.styles.styles.HeaderIcon} onPress = {() => {this.setState({messageModal:true})}}/>
     )});
   }
 
@@ -231,7 +228,7 @@ export default class IndividualFriend extends React.Component {
         <React.Fragment>
           <FriendMessageDialogModal isVisible = {this.state.messageModal} onClose = {() => {this.setState({messageModal:false})}} onSubmit = {(subject, message) => {this.setState({messageModal:false}); this.sendMessage(this.props.route.params.username, subject, message)}}/>
 
-          <ScrollView style={this.state.styles.ScrollView} refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>} >
+          <ScrollView style={this.props.styles.styles.ScrollView} refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>} >
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}>
           <View style={{ flexDirection: 'column' }}>
             <Avatar
@@ -243,27 +240,27 @@ export default class IndividualFriend extends React.Component {
             />
           </View>
           <View style={{ flexDirection: 'column' }}>
-            <Text style={[styles.topTextCenter, this.state.styles.Text]} >Points</Text>
-            <Text style={[styles.topTextCenter, this.state.styles.Text]} >{this.state.numPoints}</Text>
+            <Text style={[styles.topTextCenter, this.props.styles.styles.Text]} >Points</Text>
+            <Text style={[styles.topTextCenter, this.props.styles.styles.Text]} >{this.state.numPoints}</Text>
           </View>
           <View style={{ flexDirection: 'column' }}>
-            <Text style={[styles.topTextCenter, this.state.styles.Text]} >Friends</Text>
-            <Text style={[styles.topTextCenter, this.state.styles.Text]} >{this.state.numFriends}</Text>
+            <Text style={[styles.topTextCenter, this.props.styles.styles.Text]} >Friends</Text>
+            <Text style={[styles.topTextCenter, this.props.styles.styles.Text]} >{this.state.numFriends}</Text>
           </View>
           <View style={{ flexDirection: 'column' }}>
-            <Text style={[styles.topTextCenter, this.state.styles.Text]} >Groups</Text>
-            <Text style={[styles.topTextCenter, this.state.styles.Text]} >{this.state.numGroups}</Text>
+            <Text style={[styles.topTextCenter, this.props.styles.styles.Text]} >Groups</Text>
+            <Text style={[styles.topTextCenter, this.props.styles.styles.Text]} >{this.state.numGroups}</Text>
           </View>
         </View>
 
         <View style={{ flexDirection: 'column'}}>
-          <Text style={[styles.margin5, this.state.styles.Text]}>
+          <Text style={[styles.margin5, this.props.styles.styles.Text]}>
             {this.state.firstName} {this.state.last_name}
           </Text>
-          <Text style={[styles.margin5, this.state.styles.Text]}>
+          <Text style={[styles.margin5, this.props.styles.styles.Text]}>
             Username: {this.state.username}
           </Text>
-          <Text style={[styles.margin5, this.state.styles.Text]}>
+          <Text style={[styles.margin5, this.props.styles.styles.Text]}>
             {this.state.bio}
           </Text>
         </View>
@@ -271,9 +268,9 @@ export default class IndividualFriend extends React.Component {
         <ListItem
             onPress={() => {this.deleteFriend()}}
             title={"Delete Friend"}
-            containerStyle={this.state.styles['ListItem.containerStyle']}
-            titleStyle={this.state.styles['ListItem.titleStyle']}
-            subtitleStyle={this.state.styles['ListItem.subtitleStyle']}
+            containerStyle={this.props.styles.styles['ListItem.containerStyle']}
+            titleStyle={this.props.styles.styles['ListItem.titleStyle']}
+            subtitleStyle={this.props.styles.styles['ListItem.subtitleStyle']}
             chevron
             topDivider
             bottomDivider
@@ -284,8 +281,14 @@ export default class IndividualFriend extends React.Component {
         </React.Fragment>
       );
     }
-
 }
+
+const mapStateToProps = (state) => {
+  const {styles} = state;
+  return {styles};
+}
+
+export default connect(mapStateToProps)(IndividualFriend);
 
 const styles = StyleSheet.create({
   blue: {

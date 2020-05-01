@@ -11,21 +11,23 @@ import Groups from '../screens/Groups';
 import Profile from '../screens/Profile';
 import BottomTabNavigator from '../navigation/BottomTabNavigator';
 import {getStyles} from '../styling/Styles';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
+import {changeStyles} from '../redux/Action';
 
 const Stack = createStackNavigator();
 
-export default class Authentication extends Component{
+class Authentication extends Component{
 
   constructor(props){
     super(props);
     this.state = {
-      styles: {}
     }
   }
 
   async UNSAFE_componentWillMount() {
     let styles = await (async () => getStyles())();
-    this.setState({styles: styles});
+    this.props.changeStyles(styles);
   }
 
   render(){
@@ -36,10 +38,23 @@ export default class Authentication extends Component{
             <Stack.Navigator initialRouteName = 'Login'>
               <Stack.Screen name="Login" options = {{headerShown:false, headerTitleAlign: 'center', headerTitleStyle: {fontSize:22}, }} component={Login}/>
               <Stack.Screen name="CreateUser" options = {{headerShown:false, headerTitleAlign: 'center', headerTitleStyle: {fontSize:22}, }} component={CreateUser}/>
-              <Stack.Screen name="BottomTabNavigator" options = {{headerTitleAlign: 'center', headerStyle: this.state.styles.Header, headerTitleStyle: this.state.styles.HeaderTitle, }} component={BottomTabNavigator} initialParams={{styles: this.state.styles}}/>
+              <Stack.Screen name="BottomTabNavigator" options = {{headerTitleAlign: 'center', headerStyle: this.props.styles.styles.Header, headerTitleStyle: this.props.styles.styles.HeaderTitle, }} component={BottomTabNavigator}/>
             </Stack.Navigator>
           </NavigationContainer>
         </View>
       );
     }
 }
+
+const mapStateToProps = (state) => {
+  const {styles} = state;
+  return {styles};
+}
+
+const mapDispatchToProps = (dispatch) => (
+  bindActionCreators({
+    changeStyles
+  }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Authentication);

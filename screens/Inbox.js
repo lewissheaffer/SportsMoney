@@ -5,9 +5,9 @@ import {useState} from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { Ionicons } from '@expo/vector-icons';
 import MessageModal from "../components/MessageModal";
-import {getStyles} from '../styling/Styles';
+import {connect} from 'react-redux';
 
-export default class Inbox extends React.Component {
+class Inbox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,8 +22,6 @@ export default class Inbox extends React.Component {
 
   async componentDidMount() {
     this.fetchMessages();
-    let styles = await (async () => getStyles())();
-    this.setState({styles: styles});
   }
 
   fetchMessages() {
@@ -88,32 +86,32 @@ export default class Inbox extends React.Component {
     return (
       <React.Fragment>
         <MessageModal isVisible = {this.state.modalVisible} subject={this.state.subject} message={this.state.message} onClose = {() => {this.setState({modalVisible:false})}}/>
-        <ScrollView style={this.state.styles.ScrollView} refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
+        <ScrollView style={this.props.styles.styles.ScrollView} refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
           {
             this.state.list.map((l, i) => (
               <ListItem key={i}
-                containerStyle={this.state.styles['ListItem.containerStyle']}
-                titleStyle={this.state.styles['ListItem.titleStyle']}
+                containerStyle={this.props.styles.styles['ListItem.containerStyle']}
+                titleStyle={this.props.styles.styles['ListItem.titleStyle']}
                 title = {
                   <React.Fragment>
                   {
-                    (l.type =='friend') && <Text style = {[{fontSize: 17,}, this.state.styles.Text]}>{'Friend Request from: ' + l.username}</Text>
+                    (l.type =='friend') && <Text style = {[{fontSize: 17,}, this.props.styles.styles.Text]}>{'Friend Request from: ' + l.username}</Text>
                   }
                   {
-                    (l.type =='group') && <Text style = {[{fontSize: 17,}, this.state.styles.Text]}>{'Group Invite from: ' + l.username}</Text>
+                    (l.type =='group') && <Text style = {[{fontSize: 17,}, this.props.styles.styles.Text]}>{'Group Invite from: ' + l.username}</Text>
                   }
                   {
-                    (l.type == 'message') && <Text style = {[{fontSize: 17,}, this.state.styles.Text]}>{'Message from: ' + l.username}</Text>
+                    (l.type == 'message') && <Text style = {[{fontSize: 17,}, this.props.styles.styles.Text]}>{'Message from: ' + l.username}</Text>
                   }
 
                   </React.Fragment>
                 }
-                subtitleStyle={this.state.styles['ListItem.subtitleStyle']}
+                subtitleStyle={this.props.styles.styles['ListItem.subtitleStyle']}
                 onPress = {() => {if (l.type == "message") {this.setState({subject:l.subject, message:l.contents, modalVisible:true});}}} subtitle={
                 <React.Fragment>
                  {
                    (l.type =='friend') && <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                     <Text style = {[{fontSize: 17,}, this.state.styles.Text]}>{''}</Text>
+                     <Text style = {[{fontSize: 17,}, this.props.styles.styles.Text]}>{''}</Text>
                      <View style = {{flexDirection:'row', justifyContent:'flex-end'}}>
                        <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, true)}}>
                           <Ionicons name={'md-checkmark-circle'} color = 'green' size={35} style={{marginRight:20, }}/>
@@ -126,7 +124,7 @@ export default class Inbox extends React.Component {
                  }
                  {
                      (l.type =='group') && <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                       <Text style = {[{fontSize: 17,}, this.state.styles.Text]}>{''}</Text>
+                       <Text style = {[{fontSize: 17,}, this.props.styles.styles.Text]}>{''}</Text>
                       <View style = {{flexDirection:'row', alignItems:'flex-end'}}>
                          <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, true, l.subject)}}>
                             <Ionicons name={'md-checkmark-circle'} color = 'green' size={35} style={{marginRight:20, }}/>
@@ -139,8 +137,8 @@ export default class Inbox extends React.Component {
                  }
                  {
                    (l.type == 'message') && <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                     <Text style = {[{fontSize: 17,}, this.state.styles.Text]}>{'Tap to view'}</Text>
-                     <Text style = {[{fontSize: 17,}, this.state.styles.Text]}>{""}</Text>
+                     <Text style = {[{fontSize: 17,}, this.props.styles.styles.Text]}>{'Tap to view'}</Text>
+                     <Text style = {[{fontSize: 17,}, this.props.styles.styles.Text]}>{""}</Text>
                      <TouchableOpacity onPress = {() => {this.sendResponse(l.type, l.username, l.group_id, false, l.subject)}}>
                         <Ionicons name={'md-close-circle'} Title="Delete" color = 'red' size={35} style={{marginRight:10, }} />
                      </TouchableOpacity>
@@ -157,6 +155,13 @@ export default class Inbox extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  const {styles} = state;
+  return {styles};
+}
+
+export default connect(mapStateToProps)(Inbox);
 
 export function sendMessage(username, subject, message) {
   SecureStore.getItemAsync('key').then((ukey) => {

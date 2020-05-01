@@ -3,22 +3,19 @@ import { Text, ListItem} from 'react-native-elements';
 import {View, Button, ScrollView, RefreshControl, Alert} from 'react-native';
 import {useState} from 'react';
 import * as SecureStore from 'expo-secure-store';
-import {getStyles} from '../styling/Styles';
+import {connect} from 'react-redux';
 
-export default class Friends extends React.Component {
+class Friends extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       list: [],
       refreshing: false,
-      styles: {}
     }
   }
 
   async componentDidMount() {
     this.refreshList();
-    let styles = await (async () => getStyles())();
-    this.setState({styles: styles});
     this.props.navigation.addListener(
       'focus', () => {
         this.fetchFriends();
@@ -57,15 +54,15 @@ export default class Friends extends React.Component {
 
   render() {
     return (
-      <ScrollView style={this.state.styles.ScrollView} refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
+      <ScrollView style={this.props.styles.styles.ScrollView} refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
         {
 
           this.state.list.map((l, i) => (
             <ListItem key={i}
               title={l.first_name + ' ' + l.last_name}
-              containerStyle={this.state.styles['ListItem.containerStyle']}
-              titleStyle={this.state.styles['ListItem.titleStyle']}
-              subtitleStyle={this.state.styles['ListItem.subtitleStyle']}
+              containerStyle={this.props.styles.styles['ListItem.containerStyle']}
+              titleStyle={this.props.styles.styles['ListItem.titleStyle']}
+              subtitleStyle={this.props.styles.styles['ListItem.subtitleStyle']}
               onPress = {() => {this.props.navigation.navigate("IndividualFriend", {username:l.username, first_name:l.first_name,last_name:l.last_name, ukey:l.ukey})}}  subtitle={l.username} bottomDivider/>
           ))
         }
@@ -73,6 +70,13 @@ export default class Friends extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  const {styles} = state;
+  return {styles};
+}
+
+export default connect(mapStateToProps)(Friends);
 
 export function addFriend(username) {
   SecureStore.getItemAsync('key').then((ukey) => {

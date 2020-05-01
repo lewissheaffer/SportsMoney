@@ -3,24 +3,21 @@ import {View, Button, ScrollView, RefreshControl, TouchableOpacity} from 'react-
 import {Text, ListItem} from 'react-native-elements';
 import * as SecureStore from 'expo-secure-store';
 import GamePickListItem from '../components/GamePickListItem';
-import {getStyles} from '../styling/Styles';
+import {connect} from 'react-redux';
 
-export default class GroupGames extends React.Component {
+class GroupGames extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       gamesList: [],
       resultsList: [],
       refreshing: false,
-      styles: {}
     }
   }
 
   async componentDidMount(){
     this.fetchGames();
     this.fetchResults();
-    let styles = await (async () => getStyles())();
-    this.setState({styles: styles});
   }
 
   fetchGames() {
@@ -80,29 +77,35 @@ export default class GroupGames extends React.Component {
 
   render() {
     return (
-      <ScrollView style={this.state.styles.ScrollView} refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
-        <View style={this.state.styles['IndividualGroupGames.section_header']}><Text style={this.state.styles.Text}>Upcoming Games</Text></View>
+      <ScrollView style={this.props.styles.styles.ScrollView} refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
+        <View style={this.props.styles.styles['IndividualGroupGames.section_header']}><Text style={this.props.styles.styles.Text}>Upcoming Games</Text></View>
         {this.state.gamesList.map((l, i) => (<GamePickListItem key={i} team1={l.team1} team2={l.team2} game_id={l.game_id} group_id={this.props.route.params.group_id} sport={this.props.route.params.groupSport}/>))}
-        {this.state.gamesList.length < 1 && (<View style={this.state.styles['IndividualGroupGames.empty']}><Text style={this.state.styles['IndividualGroupGames.empty.text']}>No Games Tomorrow!</Text></View>)}
-        <View style={[this.state.styles['IndividualGroupGames.section_header'], {marginTop: 20}]}><Text style={this.state.styles.Text}>Yesterday's Results</Text></View>
+        {this.state.gamesList.length < 1 && (<View style={this.props.styles.styles['IndividualGroupGames.empty']}><Text style={this.props.styles.styles['IndividualGroupGames.empty.text']}>No Games Tomorrow!</Text></View>)}
+        <View style={[this.props.styles.styles['IndividualGroupGames.section_header'], {marginTop: 20}]}><Text style={this.props.styles.styles.Text}>Yesterday's Results</Text></View>
         {this.state.resultsList.map((l, i) => (<ListItem
           key={i}
           title={
             <View>
-              <Text style={[{marginBottom: 5}, this.state.styles.Text]}>{l.team1}: <Text style={l.team1_points > l.team2_points ? {color: 'chartreuse'} : {color: 'red'}}>{l.team1_points}</Text></Text>
-              <Text style={this.state.styles.Text}>{l.team2}: <Text style={l.team1_points < l.team2_points ? {color: 'chartreuse'} : {color: 'red'}}>{l.team2_points}</Text></Text>
+              <Text style={[{marginBottom: 5}, this.props.styles.styles.Text]}>{l.team1}: <Text style={l.team1_points > l.team2_points ? {color: 'chartreuse'} : {color: 'red'}}>{l.team1_points}</Text></Text>
+              <Text style={this.props.styles.styles.Text}>{l.team2}: <Text style={l.team1_points < l.team2_points ? {color: 'chartreuse'} : {color: 'red'}}>{l.team2_points}</Text></Text>
             </View>
           }
           rightElement={
-            <Text style={[l.correct == 1 ? {color: 'chartreuse'} : this.state.styles.Text, {fontSize: 22}]}>{l.correct == 1 ? '+25' : '+0'}</Text>
+            <Text style={[l.correct == 1 ? {color: 'chartreuse'} : this.props.styles.styles.Text, {fontSize: 22}]}>{l.correct == 1 ? '+25' : '+0'}</Text>
           }
-          containerStyle={this.state.styles['ListItem.containerStyle']}
-          titleStyle={this.state.styles['ListItem.titleStyle']}
-          subtitleStyle={this.state.styles['ListItem.subtitleStyle']}
+          containerStyle={this.props.styles.styles['ListItem.containerStyle']}
+          titleStyle={this.props.styles.styles['ListItem.titleStyle']}
+          subtitleStyle={this.props.styles.styles['ListItem.subtitleStyle']}
           bottomDivider={true}/>))}
-        {this.state.resultsList.length < 1 && (<View style={this.state.styles['IndividualGroupGames.empty']}><Text style={this.state.styles['IndividualGroupGames.empty.text']}>No Previous Games!</Text></View>)}
+        {this.state.resultsList.length < 1 && (<View style={this.props.styles.styles['IndividualGroupGames.empty']}><Text style={this.props.styles.styles['IndividualGroupGames.empty.text']}>No Previous Games!</Text></View>)}
       </ScrollView>
     );
   }
-
 }
+
+const mapStateToProps = (state) => {
+  const {styles} = state;
+  return {styles};
+}
+
+export default connect(mapStateToProps)(GroupGames);

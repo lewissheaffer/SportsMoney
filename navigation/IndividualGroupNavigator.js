@@ -7,11 +7,11 @@ import GroupGames from '../screens/IndividualGroupGames'
 import { Ionicons } from '@expo/vector-icons';
 import GroupUserDialogModal from "../components/GroupUserDialogModal";
 import * as SecureStore from 'expo-secure-store';
-import {getStyles} from '../styling/Styles';
+import {connect} from 'react-redux';
 
 const Tab = createMaterialTopTabNavigator();
 
-export default class IndividualGroupNavigator extends React.Component {
+class IndividualGroupNavigator extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -21,10 +21,8 @@ export default class IndividualGroupNavigator extends React.Component {
   }
 
   async componentDidMount() {
-    let styles = await (async () => getStyles())();
-    this.setState({styles: styles});
     this.props.navigation.setOptions({headerTitle: this.props.route.params.groupName, headerRight: () => (
-    <Text style={[{marginRight:20,}, this.state.styles.Text]} onPress = {() => {this.setState({inviteModalVisible:true})}}>Invite User</Text>)});
+    <Text style={[{marginRight:20,}, this.props.styles.styles.Text]} onPress = {() => {this.setState({inviteModalVisible:true})}}>Invite User</Text>)});
   }
 
   GroupMemberInvite(username) {
@@ -60,7 +58,7 @@ export default class IndividualGroupNavigator extends React.Component {
       <GroupUserDialogModal onSubmit = {(username) => {this.GroupMemberInvite(username); this.setState({inviteModalVisible:false});} } isVisible = {this.state.inviteModalVisible} onClose = {() => {this.setState({inviteModalVisible:false})}}/>
       <Tab.Navigator
         tabBarOptions={{
-          style: this.state.styles.TopTab,
+          style: this.props.styles.styles.TopTab,
           activeTintColor: 'dodgerblue',
           inactiveTintColor: 'rgba(104, 171, 221, 0.69)',
           indicatorColor: 'dodgerblue'
@@ -73,3 +71,10 @@ export default class IndividualGroupNavigator extends React.Component {
   );
   }
 }
+
+const mapStateToProps = (state) => {
+  const {styles} = state;
+  return {styles};
+}
+
+export default connect(mapStateToProps)(IndividualGroupNavigator);

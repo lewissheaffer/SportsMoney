@@ -3,11 +3,11 @@ import {Text, ListItem} from 'react-native-elements';
 import {View, Button, ScrollView, RefreshControl, StyleSheet} from 'react-native';
 import {useState} from 'react';
 import * as SecureStore from 'expo-secure-store';
-import {getStyles} from '../styling/Styles';
+import {connect} from 'react-redux';
 import GroupDialogModal from '../components/GroupDialogModal';
 import { Ionicons } from '@expo/vector-icons';
 
-export default class Groups extends React.Component {
+class Groups extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -21,10 +21,8 @@ export default class Groups extends React.Component {
 
   async componentDidMount() {
     this.fetchGroups();
-    let styles = await (async () => getStyles())();
-    this.setState({styles: styles});
     this.props.navigation.setOptions({headerRight: () => (
-    <Ionicons name={'md-add-circle-outline'} size={35} style={this.state.styles.HeaderIcon} onPress = {() => {this.setState({modal:true})}}/>)});
+    <Ionicons name={'md-add-circle-outline'} size={35} style={this.props.styles.styles.HeaderIcon} onPress = {() => {this.setState({modal:true})}}/>)});
   }
 
   createGroup(name, sport) {
@@ -73,16 +71,16 @@ export default class Groups extends React.Component {
     return (
       <React.Fragment>
         <GroupDialogModal isVisible = {this.state.modal} onClose = {() => {this.setState({modal:false})}} onSubmit = {(groupName,league) => {this.setState({modal:false}); this.createGroup(groupName,league); this.refreshList();}}/>
-        <ScrollView style={this.state.styles.ScrollView} refreshControl={<RefreshControl refreshing = {
+        <ScrollView style={this.props.styles.styles.ScrollView} refreshControl={<RefreshControl refreshing = {
           this.state.refreshing
         }
         onRefresh = {
           () => this.refreshList()
         } />}>
         {
-          this.state.list.map((l, i) => (<ListItem containerStyle={this.state.styles['ListItem.containerStyle']}
-            titleStyle={this.state.styles['ListItem.titleStyle']}
-            subtitleStyle={this.state.styles['ListItem.subtitleStyle']}
+          this.state.list.map((l, i) => (<ListItem containerStyle={this.props.styles.styles['ListItem.containerStyle']}
+            titleStyle={this.props.styles.styles['ListItem.titleStyle']}
+            subtitleStyle={this.props.styles.styles['ListItem.subtitleStyle']}
             key={i} title={l.name}
             onPress={() => {
               this.props.navigation.navigate("IndividualGroup", {
@@ -97,3 +95,10 @@ export default class Groups extends React.Component {
   );
   }
 }
+
+const mapStateToProps = (state) => {
+  const {styles} = state;
+  return {styles};
+}
+
+export default connect(mapStateToProps)(Groups);

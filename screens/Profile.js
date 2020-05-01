@@ -9,23 +9,25 @@ import * as SecureStore from 'expo-secure-store';
 import { clearUpdateCacheExperimentalAsync } from 'expo/build/Updates/Updates';
 import { Ionicons } from '@expo/vector-icons';
 import {getStyles} from '../styling/Styles';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
+import {changeStyles} from '../redux/Action';
 
-export default class Profile extends React.Component {
+class Profile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      numFriends: -1,
-      numGroups: -1,
-      numPoints: -1,
+      numFriends: '-',
+      numGroups: '-',
+      numPoints: '-',
       username: "Profile Name",
       firstName: "First Name",
       lastName:"Last Name",
       bio: "Biography",
-      bio2: '',
       refreshing: false,
       editingBio: false,
       theme: false,
-      styles: {},
+      styles: this.props.styles.styles,
     }
     this.changeColorTheme = this.changeColorTheme.bind(this);
   }
@@ -38,19 +40,21 @@ export default class Profile extends React.Component {
       }else{
         this.setState({theme: true});
       }
-      console.log(theme);
     });
-    let styles = await (async () => getStyles())();
-    this.setState({styles: styles});
   }
 
-  changeColorTheme = () => {
+  changeColorTheme = async () => {
     if(this.state.theme){
-      SecureStore.setItemAsync('theme', 'light');
+      await SecureStore.setItemAsync('theme', 'light');
+      let styles = await (async () => getStyles())();
+      this.props.changeStyles(styles);
+      this.setState({theme: false});
     }else{
-      SecureStore.setItemAsync('theme', 'dark');
+      await SecureStore.setItemAsync('theme', 'dark');
+      let styles = await (async () => getStyles())();
+      this.props.changeStyles(styles);
+      this.setState({theme: true});
     }
-    this.setState({theme: !this.state.theme});
   }
 
 fetchProfile() {
@@ -230,7 +234,7 @@ submitBioChange() {
 
   render() {
     return (
-      <ScrollView style={this.state.styles.ScrollView} refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>} >
+      <ScrollView style={this.props.styles.styles.ScrollView} refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>} >
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}>
           <View style={{ flexDirection: 'column' }}>
             <Avatar
@@ -242,47 +246,47 @@ submitBioChange() {
             />
           </View>
           <View style={{ flexDirection: 'column' }}>
-            <Text style={[styles.topTextCenter, this.state.styles.Text]} >Points</Text>
-            <Text style={[styles.topTextCenter, this.state.styles.Text]} >{this.state.numPoints}</Text>
+            <Text style={[styles.topTextCenter, this.props.styles.styles.Text]} >Points</Text>
+            <Text style={[styles.topTextCenter, this.props.styles.styles.Text]} >{this.state.numPoints}</Text>
           </View>
           <View style={{ flexDirection: 'column' }}>
-            <Text style={[styles.topTextCenter, this.state.styles.Text]} >Friends</Text>
-            <Text style={[styles.topTextCenter, this.state.styles.Text]} >{this.state.numFriends}</Text>
+            <Text style={[styles.topTextCenter, this.props.styles.styles.Text]} >Friends</Text>
+            <Text style={[styles.topTextCenter, this.props.styles.styles.Text]} >{this.state.numFriends}</Text>
           </View>
           <View style={{ flexDirection: 'column' }}>
-            <Text style={[styles.topTextCenter, this.state.styles.Text]} >Groups</Text>
-            <Text style={[styles.topTextCenter, this.state.styles.Text]} >{this.state.numGroups}</Text>
+            <Text style={[styles.topTextCenter, this.props.styles.styles.Text]} >Groups</Text>
+            <Text style={[styles.topTextCenter, this.props.styles.styles.Text]} >{this.state.numGroups}</Text>
           </View>
         </View>
 
         <View style={{ flexDirection: 'column'}}>
-          <Text style={[styles.margin5, this.state.styles.Text]}>
+          <Text style={[styles.margin5, this.props.styles.styles.Text]}>
             {this.state.firstName} {this.state.lastName}
           </Text>
-          <Text style={[styles.margin5, this.state.styles.Text]}>
+          <Text style={[styles.margin5, this.props.styles.styles.Text]}>
             Username: {this.state.username}
           </Text>
-          <Text style={[styles.margin5, this.state.styles.Text]}>
+          <Text style={[styles.margin5, this.props.styles.styles.Text]}>
             {this.state.bio}
           </Text>
         </View>
           <ListItem
             onPress={() => {this.setState({editingBio:true})}}
             title={"Edit Bio"}
-            containerStyle={this.state.styles['ListItem.containerStyle']}
-            titleStyle={this.state.styles['ListItem.titleStyle']}
-            subtitleStyle={this.state.styles['ListItem.subtitleStyle']}
+            containerStyle={this.props.styles.styles['ListItem.containerStyle']}
+            titleStyle={this.props.styles.styles['ListItem.titleStyle']}
+            subtitleStyle={this.props.styles.styles['ListItem.subtitleStyle']}
             chevron
             topDivider
             bottomDivider
           />
 
-        <Overlay overlayStyle={this.state.styles.Overlay} isVisible={this.state.editingBio} height = {170}  onBackdropPress = {() => this.setState({editingBio:false})}>
+        <Overlay overlayStyle={this.props.styles.styles.Overlay} isVisible={this.state.editingBio} height = {170}  onBackdropPress = {() => this.setState({editingBio:false})}>
             <View style={{flex:1,}}>
-              <Text style = {[{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}, this.state.styles.Text]}>Edit Bio</Text>
-              <TextInput style = {[styles.input_container, this.state.styles.Input, {marginBottom: 15}]}
-                onChangeText={(bio) => this.setState({bio2: bio})}
-                value={this.state.bio2}
+              <Text style = {[{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}, this.props.styles.styles.Text]}>Edit Bio</Text>
+              <TextInput style = {[styles.input_container, this.props.styles.styles.Input, {marginBottom: 15}]}
+                onChangeText={(bio) => this.setState({bio: bio})}
+                value={this.state.bio}
                 placeholder = "Bio"
                 underlineColorAndroid='transparent'
               />
@@ -290,11 +294,11 @@ submitBioChange() {
                 <View style={{width: 80}}>
                   <Button title = {"Submit"} type = {'clear'}  onPress={() => {
                     this.setState({editingBio:false})
-                    this.submitBioChange()
+                    this.submitBioChange();
                   }}/>
                 </View>
                 <View style={{width: 80}}>
-                  <Button title = {"Cancel"} type = {'clear'} onPress = {() => this.setState({editingBio:false, bio2: ''})}/>
+                  <Button title = {"Cancel"} type = {'clear'} onPress = {() => this.setState({editingBio:false})}/>
                 </View>
               </View>
             </View>
@@ -302,18 +306,18 @@ submitBioChange() {
 
           <ListItem
             title='Theme'
-            containerStyle={this.state.styles['ListItem.containerStyle']}
-            titleStyle={this.state.styles['ListItem.titleStyle']}
-            subtitleStyle={this.state.styles['ListItem.subtitleStyle']}
+            containerStyle={this.props.styles.styles['ListItem.containerStyle']}
+            titleStyle={this.props.styles.styles['ListItem.titleStyle']}
+            subtitleStyle={this.props.styles.styles['ListItem.subtitleStyle']}
             rightElement={
               <View style={{flexDirection: 'row'}}>
-                <Ionicons name={'md-sunny'} size={25} style={this.state.styles.ColorThemePickerIcon}/>
+                <Ionicons name={'md-sunny'} size={25} style={this.props.styles.styles.ColorThemePickerIcon}/>
                   <Switch
                     trackColor={{ false: "dodgerblue", true: 'dodgerblue' }}
                     thumbColor={this.state.theme ? 'dodgerblue' : 'dodgerblue'}
                     onChange={this.changeColorTheme}
                     value={this.state.theme}/>
-                  <Ionicons name={'md-moon'} size={25} style={this.state.styles.ColorThemePickerIcon}/>
+                  <Ionicons name={'md-moon'} size={25} style={this.props.styles.styles.ColorThemePickerIcon}/>
               </View>
             }
           />
@@ -321,9 +325,9 @@ submitBioChange() {
           <ListItem
           onPress={() => {SecureStore.deleteItemAsync('key'); SecureStore.setItemAsync('theme', 'light'); this.props.navigation.reset({routes:[{name: "Login"}]});}}
           title={'Sign Out'}
-          containerStyle={this.state.styles['ListItem.containerStyle']}
-          titleStyle={this.state.styles['ListItem.titleStyle']}
-          subtitleStyle={this.state.styles['ListItem.subtitleStyle']}
+          containerStyle={this.props.styles.styles['ListItem.containerStyle']}
+          titleStyle={this.props.styles.styles['ListItem.titleStyle']}
+          subtitleStyle={this.props.styles.styles['ListItem.subtitleStyle']}
           chevron
           topDivider
           bottomDivider
@@ -334,6 +338,19 @@ submitBioChange() {
   }
 
 }
+
+const mapStateToProps = (state) => {
+  const {styles} = state;
+  return {styles};
+}
+
+const mapDispatchToProps = (dispatch) => (
+  bindActionCreators({
+    changeStyles
+  }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
 
 const styles = StyleSheet.create({
     blue: {

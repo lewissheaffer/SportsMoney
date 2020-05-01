@@ -2,22 +2,19 @@ import * as React from 'react';
 import {View, Button, ScrollView, RefreshControl} from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import {getStyles} from '../styling/Styles';
+import {connect} from 'react-redux';
 
-export default class GroupRankings extends React.Component {
+class GroupRankings extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       rankingsList:[],
       refreshing: false,
-      styles: {}
     }
   }
 
   async componentDidMount(){
     this.fetchRankings();
-    let styles = await (async () => getStyles())();
-    this.setState({styles: styles});
   }
 
   compare(x, y){
@@ -60,16 +57,16 @@ export default class GroupRankings extends React.Component {
 
   render(){
     return (
-      <ScrollView style={this.state.styles.ScrollView} refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
+      <ScrollView style={this.props.styles.styles.ScrollView} refreshControl = {<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.refreshList()}/>}>
         {
           this.state.rankingsList.map((l, i) => (
             <ListItem
               key={i}
               title={`${l.first_name} ${l.last_name}: ${l.points} pts`}
               subtitle={l.username}
-              containerStyle={this.state.styles['ListItem.containerStyle']}
-              titleStyle={this.state.styles['ListItem.titleStyle']}
-              subtitleStyle={this.state.styles['ListItem.subtitleStyle']}
+              containerStyle={this.props.styles.styles['ListItem.containerStyle']}
+              titleStyle={this.props.styles.styles['ListItem.titleStyle']}
+              subtitleStyle={this.props.styles.styles['ListItem.subtitleStyle']}
               bottomDivider/>
           ))
         }
@@ -77,3 +74,10 @@ export default class GroupRankings extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  const {styles} = state;
+  return {styles};
+}
+
+export default connect(mapStateToProps)(GroupRankings);

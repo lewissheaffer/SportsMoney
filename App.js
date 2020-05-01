@@ -11,6 +11,12 @@ import useLinking from './navigation/useLinking';
 
 import Authentication from './components/Authentication';
 
+import {Provider} from 'react-redux';
+import {createStore} from 'redux';
+import stylesReducer from './redux/Reducer';
+
+const store = createStore(stylesReducer);
+
 const Stack = createStackNavigator();
 
 export default function App(props) {
@@ -48,6 +54,10 @@ export default function App(props) {
   if (!isLoadingComplete && !props.skipLoadingScreen) {
     return null;
   } else {
-    return <Authentication/>;
+    return (
+      <Provider store={store}>
+        <Authentication/>
+      </Provider>
+    );
   }
 }

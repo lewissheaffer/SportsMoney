@@ -7,21 +7,15 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Friends from '../screens/Friends';
 import IndividualFriend from '../screens/IndividualFriend';
 import { Ionicons } from '@expo/vector-icons';
-import {getStyles} from '../styling/Styles';
+import {connect} from 'react-redux';
 
 const Stack = createStackNavigator();
-export default class FriendsNavigator extends Component{
+class FriendsNavigator extends Component{
   constructor(props){
     super(props);
     this.state = {
       modal:false,
-      styles: {}
     }
-  }
-
-  async componentDidMount() {
-    let styles = await (async () => getStyles())();
-    this.setState({styles: styles});
   }
 
   render(){
@@ -31,12 +25,19 @@ export default class FriendsNavigator extends Component{
           <View style={{flex:1, backgroundColor:'white'}}>
             {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
               <Stack.Navigator initialRouteName = 'Friends'>
-                <Stack.Screen name="IndividualFriend" options = {{headerTitleAlign: 'center', headerStyle: this.state.styles.Header, headerTitleStyle: this.state.styles.HeaderTitle, headerTintColor: 'dodgerblue' }} component={IndividualFriend}/>
-                <Stack.Screen name="Friends" options = {{headerTitleAlign: 'center', headerStyle: this.state.styles.Header, headerTitleStyle: this.state.styles.HeaderTitle, headerRight: () => (
-                  <Ionicons name={'md-person-add'} size={35} style={this.state.styles.HeaderIcon} onPress = {() => {this.setState({modal:true})}}/>)}} component={Friends}/>
+                <Stack.Screen name="IndividualFriend" options = {{headerTitleAlign: 'center', headerStyle: this.props.styles.styles.Header, headerTitleStyle: this.props.styles.styles.HeaderTitle, headerTintColor: 'dodgerblue' }} component={IndividualFriend}/>
+                <Stack.Screen name="Friends" options = {{headerTitleAlign: 'center', headerStyle: this.props.styles.styles.Header, headerTitleStyle: this.props.styles.styles.HeaderTitle, headerRight: () => (
+                  <Ionicons name={'md-person-add'} size={35} style={this.props.styles.styles.HeaderIcon} onPress = {() => {this.setState({modal:true})}}/>)}} component={Friends}/>
               </Stack.Navigator>
           </View>
         </React.Fragment>
       );
     }
 }
+
+const mapStateToProps = (state) => {
+  const {styles} = state;
+  return {styles};
+}
+
+export default connect(mapStateToProps)(FriendsNavigator);

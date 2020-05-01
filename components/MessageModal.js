@@ -3,28 +3,21 @@ import { useState} from 'react';
 import {View, Picker, TextInput, Platform, StyleSheet} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Overlay, Text, Button, Input } from 'react-native-elements';
-import {getStyles} from '../styling/Styles';
+import {connect} from 'react-redux';
 
-
-export default class MessageModal extends React.Component {
+class MessageModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      styles: {}
     }
-  }
-
-  async componentDidMount() {
-    let styles = await (async () => getStyles())();
-    this.setState({styles: styles});
   }
 
   render(){
     return (
-      <Overlay overlayStyle={this.state.styles.Overlay} isVisible={this.props.isVisible} height = {120 + (23 * Math.ceil(this.props.message.length/25))}  onBackdropPress = {() => {this.props.onClose()}}>
+      <Overlay overlayStyle={this.props.styles.styles.Overlay} isVisible={this.props.isVisible} height = {120 + (23 * Math.ceil(this.props.message.length/25))}  onBackdropPress = {() => {this.props.onClose()}}>
         <View style={{flex:1,}}>
-          <Text style = {[{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}, this.state.styles.Text]}>{this.props.subject}</Text>
-          <Text style = {[{marginTop: 5, marginBottom: 10, fontSize: 20}, this.state.styles.Text]}>{this.props.message}</Text>
+          <Text style = {[{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}, this.props.styles.styles.Text]}>{this.props.subject}</Text>
+          <Text style = {[{marginTop: 5, marginBottom: 10, fontSize: 20}, this.props.styles.styles.Text]}>{this.props.message}</Text>
           <View style = {{flexDirection:'row-reverse', alignSelf: "flex-end"}}>
             <View style={{width: 80}}>
               <Button title = {"Close"} type = {'clear'} onPress = {() => this.props.onClose()}/>
@@ -35,6 +28,13 @@ export default class MessageModal extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  const {styles} = state;
+  return {styles};
+}
+
+export default connect(mapStateToProps)(MessageModal);
 
 const styles = StyleSheet.create({
   input_container:{

@@ -11,22 +11,24 @@ import Inbox from '../screens/Inbox';
 import Profile from '../screens/Profile';
 import { Overlay, Text, Button, Input } from 'react-native-elements';
 import * as SecureStore from 'expo-secure-store';
+import {connect} from 'react-redux';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Groups';
 
-export default function BottomTabNavigator({ navigation, route }) {
+function BottomTabNavigator(props) {
+  console.log(props);
   // Set the header title on the parent stack navigator depending on the
   // currently active tab. Learn more in the documentation:
   // https://reactnavigation.org/docs/en/screen-options-resolution.html
-  navigation.setOptions({ headerShown: (getHeaderTitle(route) !== "Groups") && (getHeaderTitle(route) !== "Friends") && (getHeaderTitle(route) !== "Inbox"), headerTitle: getHeaderTitle(route), headerLeft: null});
+  props.navigation.setOptions({ headerShown: (getHeaderTitle(props.route) !== "Groups") && (getHeaderTitle(props.route) !== "Friends") && (getHeaderTitle(props.route) !== "Inbox"), headerTitle: getHeaderTitle(props.route), headerLeft: null});
 
   return (
     <React.Fragment>
       <BottomTab.Navigator
         initialRouteName={INITIAL_ROUTE_NAME}
         tabBarOptions = {{
-          style: route.params.styles.BottomTab,
+          style: props.styles.styles.BottomTab,
           activeTintColor: 'dodgerblue',
           inactiveTintColor: 'rgba(104, 171, 221, 0.69)'
         }}>
@@ -71,3 +73,10 @@ function getHeaderTitle(route) {
   const routeName = route.state?.routes[route.state.index]?.name ?? INITIAL_ROUTE_NAME;
   return routeName;
 }
+
+const mapStateToProps = (state) => {
+  const {styles} = state;
+  return {styles};
+}
+
+export default connect(mapStateToProps)(BottomTabNavigator);
