@@ -30,7 +30,7 @@ export default class FriendMessageDialogModal extends React.Component {
           <Input inputStyle={this.state.styles.Input} onChangeText = {(text) => this.setState({message:text})} placeholder = "Message" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.message ? '' : 'Message cannot be blank.'} />
           <View style = {{flexDirection:'row-reverse', alignSelf: "flex-end"}}>
             <View style={{width: 80}}>
-              <Button title = {"Submit"} type = {'clear'} disabled={!this.state.message || !this.state.subject} onPress = {() => {
+              <Button title = {"Submit"} type = {'clear'} disabled={!this.state.message || !this.state.subject || (this.state.message > 140) || (this.state.subject > 20)} onPress = {() => {
                 this.props.onSubmit(this.state.subject, this.state.message); this.setState({message: '', subject: ''});
               }}/>
             </View>

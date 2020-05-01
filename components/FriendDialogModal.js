@@ -6,6 +6,7 @@ import { Overlay, Text, Button, Input } from 'react-native-elements';
 import {addFriend} from '../screens/Friends';
 import {sendmessage} from '../screens/Inbox';
 import {getStyles} from '../styling/Styles';
+import * as SecureStore from 'expo-secure-store';
 
 export default class FriendDialogModal extends React.Component {
   constructor(props) {
@@ -26,7 +27,7 @@ export default class FriendDialogModal extends React.Component {
     this.setState({styles: styles});
   }
 
-  checkUser = (username) => {
+  checkUser = (friendsusername) => {
     try{
       let response = fetch('https://sportsmoneynodejs.appspot.com/check_user', {
         method: 'POST',
@@ -35,7 +36,7 @@ export default class FriendDialogModal extends React.Component {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            username: username,
+            username: friendsusername,
           }),
       })
       .then((response) => response.json())
@@ -47,25 +48,27 @@ export default class FriendDialogModal extends React.Component {
     }
   }
 
-  checkUserFromFriends = (FriendsUsername) => {
-    try{
-      let response = fetch('https://sportsmoneynodejs.appspot.com/check_user_from_friends', {
-        method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            FriendsUsername: FriendsUsername,
-          }),
-      })
-      .then((response) => response.json())
-      .then((json) => {
-        this.setState({Friendexists: json.exists});
-      });
-    }catch(err){
-      console.log(err);
-    }
+  fetchName() {
+    SecureStore.getItemAsync('key').then((ukey) => {
+      try{
+        let response = fetch('https://sportsmoneynodejs.appspot.com/fetch_user_by_ukey', {
+          method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              ukey: ukey
+            }),
+        })
+        .then((response) => response.json())
+        .then((json) => {
+          this.setState({username:json.username});
+        });
+      }catch(err){
+        console.log("name error: "+err);
+      }
+    });
   }
 
   render(){
@@ -73,11 +76,11 @@ export default class FriendDialogModal extends React.Component {
       <Overlay overlayStyle={this.state.styles.Overlay} isVisible={this.props.isVisible} height = {175}  onBackdropPress = {() => {this.props.onClose()}}>
         <View style={{flex:1,}}>
           <Text style = {[{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}, this.state.styles.Text]}>Add a Friend</Text>
-          <Input inputStyle={this.state.styles.Input} onChangeText = {(text) => {this.setState({username:text}); this.checkUser(text)}} placeholder = "Friend's username" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.exists ? '' : 'User does not exist.'} />
+          <Input inputStyle={this.state.styles.Input} onChangeText = {(text) => {this.setState({FriendsUsername:text}); this.checkUser(text); this.fetchName()}} placeholder = "Friend's username" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.exists ? '' : 'User does not exist.'} />
           <View style = {{flexDirection:'row-reverse', alignSelf: "flex-end"}}>
             <View style={{width: 80}}>
-              <Button title = {"Submit"} type = {'clear'} disabled={!this.state.exists} onPress = {() => {
-                addFriend(this.state.username); this.props.onClose(); this.setState({exists: false});
+              <Button title = {"Submit"} type = {'clear'} disabled={!this.state.exists || (this.state.username == this.state.FriendsUsername)} onPress = {() => {
+                addFriend(this.state.FriendsUsername); this.props.onClose(); this.setState({exists: false});
               }}/>
             </View>
             <View style={{width: 80}}>

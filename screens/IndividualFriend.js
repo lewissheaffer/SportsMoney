@@ -187,6 +187,7 @@ export default class IndividualFriend extends React.Component {
   deleteFriend() {
     SecureStore.getItemAsync('key').then((ukey) => {
       try{
+        console.log(ukey + "   " + this.state.ukey);
         let response = fetch('https://sportsmoneynodejs.appspot.com/delete_friend', {
           method: 'POST',
             headers: {
@@ -194,7 +195,7 @@ export default class IndividualFriend extends React.Component {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              ukey1: ukey ,
+              ukey1: ukey,
               ukey2: this.state.ukey
             }),
         })

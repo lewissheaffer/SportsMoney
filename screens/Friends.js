@@ -21,7 +21,7 @@ export default class Friends extends React.Component {
     this.setState({styles: styles});
     this.props.navigation.addListener(
       'focus', () => {
-        this.refreshList();
+        this.fetchFriends();
       }
     );
   }
