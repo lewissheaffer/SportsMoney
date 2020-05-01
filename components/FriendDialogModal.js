@@ -21,7 +21,7 @@ class FriendDialogModal extends React.Component {
     }
   }
 
-  checkUser = (username) => {
+  checkUser = (friendsusername) => {
     try{
       let response = fetch('https://sportsmoneynodejs.appspot.com/check_user', {
         method: 'POST',
@@ -70,7 +70,7 @@ class FriendDialogModal extends React.Component {
       <Overlay overlayStyle={this.props.styles.styles.Overlay} isVisible={this.props.isVisible} height = {175}  onBackdropPress = {() => {this.props.onClose()}}>
         <View style={{flex:1,}}>
           <Text style = {[{marginTop: 5, marginBottom: 10, fontWeight:'bold', fontSize: 20}, this.props.styles.styles.Text]}>Add a Friend</Text>
-          <Input inputStyle={this.props.styles.styles.Input} onChangeText = {(text) => {this.setState({username:text}); this.checkUser(text)}} placeholder = "Friend's username" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.exists ? '' : 'User does not exist.'} />
+          <Input inputStyle={this.props.styles.styles.Input} onChangeText = {(text) => {this.setState({FriendsUsername:text}); this.checkUser(text); this.fetchName()}} placeholder = "Friend's username" underlineColorAndroid='transparent' errorStyle={{color: 'red'}} errorMessage={this.state.exists ? '' : 'User does not exist.'} />
           <View style = {{flexDirection:'row-reverse', alignSelf: "flex-end"}}>
             <View style={{width: 80}}>
               <Button title = {"Submit"} type = {'clear'} disabled={!this.state.exists || (this.state.username == this.state.FriendsUsername)} onPress = {() => {
