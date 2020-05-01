@@ -34,13 +34,11 @@ class Profile extends React.Component {
 
   async componentDidMount() {
     this.fetchProfile();
-    SecureStore.getItemAsync('theme').then((theme) => {
-      if(theme == 'light'){
-        this.setState({theme: false});
-      }else{
-        this.setState({theme: true});
-      }
-    });
+    if(this.props.styles.styles.Header.backgroundColor == 'white'){
+      this.setState({theme: false});
+    }else{
+      this.setState({theme: true});
+    }
   }
 
   changeColorTheme = async () => {
@@ -323,7 +321,7 @@ submitBioChange() {
           />
 
           <ListItem
-          onPress={() => {SecureStore.deleteItemAsync('key'); SecureStore.setItemAsync('theme', 'light'); this.props.navigation.reset({routes:[{name: "Login"}]});}}
+          onPress={() => {SecureStore.deleteItemAsync('key'); this.props.navigation.reset({routes:[{name: "Login"}]});}}
           title={'Sign Out'}
           containerStyle={this.props.styles.styles['ListItem.containerStyle']}
           titleStyle={this.props.styles.styles['ListItem.titleStyle']}
